@@ -12,7 +12,34 @@ namespace Watch_EcommerceBl.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWorks
     {
+        public IGenericRepository<Category, int> categoryRepository;
+        public IGenericRepository<ProductBrand, int> productBrandRepository;
+
         public TikrContext _context { get; set; }
+
+        public IGenericRepository<Category, int> CategoryRepository
+        {
+            get
+            {
+                if (categoryRepository == null) {
+                    categoryRepository = new GenericRepository<Category, int>(_context);
+                }
+                return categoryRepository;
+            }
+        }
+
+        public IGenericRepository<ProductBrand, int> ProductBrandRepository
+        {
+            get
+            {
+                if (productBrandRepository == null)
+                {
+                    productBrandRepository = new GenericRepository<ProductBrand, int>(_context);
+                }
+                return productBrandRepository;
+            }
+        }
+
 
         //public Hashtable _repositories;
         public UnitOfWork(TikrContext dbContext)

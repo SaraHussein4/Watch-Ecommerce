@@ -2,6 +2,8 @@
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 
 namespace Watch_Ecommerce
 {
@@ -29,6 +31,9 @@ namespace Watch_Ecommerce
                 .AddDefaultTokenProviders();
             #endregion
 
+            #region automapper
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+            #endregion
 
             #region CORS
             builder.Services.AddCors(options =>
@@ -40,6 +45,10 @@ namespace Watch_Ecommerce
                           .AllowAnyMethod();
                 });
             });
+            #endregion
+
+            #region UnitOfWork
+            builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
 
             var app = builder.Build();

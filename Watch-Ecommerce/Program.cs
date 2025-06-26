@@ -1,11 +1,14 @@
-
 using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.Helpers;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Watch_EcommerceBl.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Watch_EcommerceBl.UnitOfWorks;
+using Watch_EcommerceBl.Interfaces;
+using Watch_Ecommerce.Services;
+
 namespace Watch_Ecommerce
 {
     public class Program
@@ -14,16 +17,37 @@ namespace Watch_Ecommerce
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        
             builder.Services.AddOpenApi();
-            builder.Services.AddDbContext<TikrContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddIdentity<User , IdentityRole>(Options =>
+            {
+                Options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<TikrContext>()
+            .AddDefaultTokenProviders();
+            ;
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
-            builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
+            builder.Services.AddScoped<IUnitOfWorks , UnitOfWork>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
+            builder.Services.AddAuthentication(Options =>
+            {
+
+                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+
+            });
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>
@@ -31,9 +55,7 @@ namespace Watch_Ecommerce
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<TikrContext>()
-                .AddDefaultTokenProviders();
+            
             #endregion
 
 

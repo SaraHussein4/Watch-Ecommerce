@@ -41,16 +41,30 @@ namespace Watch_EcommerceBl.UnitOfWorks
             await _context.DisposeAsync();
         }
 
-    //public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
-    //{
-    //    var type = typeof(TEntity).Name;
-    //    if (!_repositories.ContainsKey(type))
-    //    {
-    //        var Repository = new GenericRepository<TEntity>(_dbContext);
-    //        _repositories.Add(type, Repository);
-    //    }
-    //    return _repositories[type] as IGenericRepository<TEntity>;
-    //}
+        //public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
+        //{
+        //    var type = typeof(TEntity).Name;
+        //    if (!_repositories.ContainsKey(type))
+        //    {
+        //        var Repository = new GenericRepository<TEntity>(_dbContext);
+        //        _repositories.Add(type, Repository);
+        //    }
+        //    return _repositories[type] as IGenericRepository<TEntity>;
+        //}
+
+        public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
+        {
+            var type= typeof(TEntity).Name + typeof(TKey).Name;
+
+            if (!_repositories.ContainsKey(type))
+            {
+                var Repository = new GenericRepository<TEntity, TKey>(_context);
+                _repositories.Add(type, Repository);
+            }
+
+            return _repositories[type] as IGenericRepository<TEntity, TKey>;
+        }
+    }
 }
     }
 

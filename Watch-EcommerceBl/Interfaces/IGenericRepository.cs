@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Watch_EcommerceDAL.Models;
 
 namespace Watch_EcommerceBl.Interfaces
 {
-    public interface IGenericRepository<T> where T : BaseEntity
+    public interface IGenericRepository<TEntity, TKey> where TEntity : class
     {
-        Task<IReadOnlyList<T>> GetAllAsync();
-        Task<T> GetByIdAsync(int id);
-        void Update(T entity, int id);
-        void Delete(int id);
-        Task AddAsync(T item);
+        Task<TEntity> GetByIdAsync(TKey id);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(int page, int pageSize);
+        Task AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
+        Task DeleteAsync(TKey id);
+        Task<bool> ExistsAsync(TKey id);
     }
 }

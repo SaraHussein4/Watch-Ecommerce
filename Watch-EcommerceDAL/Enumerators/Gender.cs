@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Watch_EcommerceDAL.Models
+namespace ECommerce.Core.Enumerators
 {
-    public class BaseEntity
+    public enum Gender
     {
-        public int id { get; set; }
+        Male,
+        Female
     }
 }

@@ -1,13 +1,14 @@
 
 using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.Helpers;
-using Watch_EcommerceDAL.Contexts;
-
+using ECommerce.Core.model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 namespace Watch_Ecommerce
 {
     public class Program
     {
-        public static async void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +18,23 @@ namespace Watch_Ecommerce
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         
            builder.Services.AddOpenApi();
-            builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<TikrContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
+            #region Database & User Identity
+            builder.Services.AddDbContext<TikrContext>(options =>
+            {
+                options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<TikrContext>()
+                .AddDefaultTokenProviders();
+            #endregion
+
+
+            #region CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -30,6 +44,7 @@ namespace Watch_Ecommerce
                           .AllowAnyMethod();
                 });
             });
+            #endregion
 
             var app = builder.Build();
 
@@ -39,7 +54,7 @@ namespace Watch_Ecommerce
 
             try
             {
-                var dbContext = service.GetRequiredService<StoreContext>();
+                var dbContext = service.GetRequiredService<TikrContext>();
                 await dbContext.Database.MigrateAsync();
 
             }

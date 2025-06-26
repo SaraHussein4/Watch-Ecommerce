@@ -1,0 +1,135 @@
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Core.model
+{
+    public class TikrContext : IdentityDbContext
+    {
+        public TikrContext(DbContextOptions<TikrContext> options): base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            #region Address
+            builder.Entity<Address>().HasKey(a => a.Id);
+
+            builder.Entity<Address>().Property(a => a.Street).HasMaxLength(100);
+            builder.Entity<Address>().Property(a => a.State).HasMaxLength(100);
+
+            builder.Entity<Address>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.Addresses)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
+            
+            #region Category
+            builder.Entity<Category>().HasKey(a => a.Id);
+            builder.Entity<Category>().Property(a => a.Name).HasMaxLength(100);
+
+            #endregion
+           
+            #region Favourite
+            builder.Entity<Favourite>().HasKey(f => new {f.UserId, f.ProductId});
+            builder.Entity<Favourite>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Products)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Favourite>()
+                .HasOne(f => f.Product)
+                .WithMany(p => p.Users)
+                .HasForeignKey(f => f.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            #endregion
+
+            #region Image
+            builder.Entity<Image>().HasKey(i => i.Id);
+            builder.Entity<Image>().Property(i => i.Url).HasMaxLength(100);
+            builder.Entity<Image>()
+                .HasOne(i => i.Product)
+                .WithMany(p => p.Images)
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            #endregion
+            
+            #region Order
+            builder.Entity<Order>().HasKey(o => o.Id);
+            builder.Entity<Order>().Property(o => o.Status).HasMaxLength(100);
+            builder.Entity<Order>().Property(o => o.Amount).HasColumnType("decimal(18,2)");
+
+            builder.Entity<Order>().Property(o => o.Date).HasColumnType("DATETIME2");
+
+            builder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            #endregion
+
+            #region OrderItem
+            builder.Entity<OrderItem>().HasKey(oi => oi.Id);
+            builder.Entity<OrderItem>().Property(oi => oi.Amount).HasColumnType("decimal(18,2)");
+            builder.Entity<OrderItem>().Property(oi => oi.Price).HasColumnType("decimal(18,2)");
+
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            #endregion
+
+            #region Product
+            builder.Entity<Product>().HasKey(p => p.Id);
+
+            builder.Entity<Product>().Property(p => p.Name).HasMaxLength(100);
+            builder.Entity<Product>().Property(p => p.Description).HasMaxLength(200);
+            builder.Entity<Product>().Property(p => p.Status).HasMaxLength(100);
+
+            builder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(18,2)");
+
+            builder.Entity<Product>().Property(p => p.GenderCategory).HasConversion<string>().HasMaxLength(20);
+
+
+            builder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+                .HasOne(p => p.ProductBrand)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.ProductBrandId)
+                .OnDelete(DeleteBehavior.Restrict);
+            #endregion
+
+            #region ProductBrand
+                builder.Entity<ProductBrand>().HasKey(pb => pb.Id);
+                builder.Entity<ProductBrand>().Property(pb => pb.Name).HasMaxLength(100);
+            #endregion
+
+            #region User
+            builder.Entity<User>().Property(u => u.Name).HasMaxLength(100);
+            #endregion
+        }
+    }
+}

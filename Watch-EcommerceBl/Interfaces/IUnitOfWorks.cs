@@ -11,6 +11,5 @@ namespace Watch_EcommerceBl.Interfaces
         //IGenericRepository<TEntity> Repository<TEntity, Tkey>() where TEntity : class;
         Task<int> CompleteAsync();
 
-
     }
 }

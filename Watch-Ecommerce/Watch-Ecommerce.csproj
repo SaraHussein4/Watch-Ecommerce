@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\**" />
+    <Content Remove="wwwroot\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <None Remove="wwwroot\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
@@ -16,15 +23,26 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< Sara
+=======
+    <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="DTOs\" />
+>>>>>>> main
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />
+    <Folder Include="Controllers\" />
+    <Folder Include="DTOS\" />
+    <Folder Include="MappingProfiles\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,6 +131,16 @@ namespace ECommerce.Core.model
             #region User
             builder.Entity<User>().Property(u => u.Name).HasMaxLength(100);
             #endregion
+
         }
+
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Category> Categories{ get; set; }
+        public DbSet<Favourite> Favourites{ get; set; }
+        public DbSet<Image> Images{ get; set; }
+        public DbSet<OrderItem> OrderItems{ get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductBrand> ProductBrands{ get; set; }
+
     }
 }

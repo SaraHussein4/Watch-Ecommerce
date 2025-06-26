@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
+using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
@@ -34,6 +35,11 @@ namespace Watch_Ecommerce.Helpers
             #region Product
             CreateMap<Product, ProductReadDTO>()
                 .ReverseMap();
+            CreateMap<Product, AddProductDTO>()
+               .ReverseMap();
+            CreateMap<Product, UpdateProductDTO>()
+              .ReverseMap();
+
             #endregion
 
         }

@@ -26,5 +26,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,6 +1,7 @@
 ﻿namespace Watch_Ecommerce.DTOs.Product
 {
-    public class AddProductDTO
+    public class UpdateProductDTO:AddProductDTO
     {
+        public int Id { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Core.model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,8 @@ namespace Watch_EcommerceBl.Interfaces
 {
     public interface IUnitOfWorks : IAsyncDisposable
     {
-        //IGenericRepository<TEntity> Repository<TEntity, Tkey>() where TEntity : class;
+        IGenericRepository<Category, int> CategoryRepository {  get; }
+        IGenericRepository<ProductBrand, int> ProductBrandRepository {  get; }
         Task<int> CompleteAsync();
-
-
     }
 }

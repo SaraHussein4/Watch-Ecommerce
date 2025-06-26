@@ -12,13 +12,52 @@ namespace Watch_EcommerceBl.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWorks
     {
-        public TikrContext _context { get; set; }
+
+        private readonly TikrContext _context;
+        ProductRepository productRepository;
+        public IGenericRepository<Category, int> categoryRepository;
+        public IGenericRepository<ProductBrand, int> productBrandRepository;
+
 
         //public Hashtable _repositories;
         public UnitOfWork(TikrContext dbContext)
         {
             _context = dbContext;
-            //_repositories = new Hashtable();
+        }
+
+        public IGenericRepository<Category, int> CategoryRepository
+        {
+            get
+            {
+                if (categoryRepository == null) {
+                    categoryRepository = new GenericRepository<Category, int>(_context);
+                }
+                return categoryRepository;
+            }
+        }
+
+        public IGenericRepository<ProductBrand, int> ProductBrandRepository
+        {
+            get
+            {
+                if (productBrandRepository == null)
+                {
+                    productBrandRepository = new GenericRepository<ProductBrand, int>(_context);
+                }
+                return productBrandRepository;
+            }
+        }
+
+        public ProductRepository ProdRepo
+        {
+            get
+            {
+                if (productRepository == null)
+                {
+                    productRepository = new ProductRepository(_context);
+                }
+                return productRepository;
+            }
         }
         public async Task<int> CompleteAsync()
         {
@@ -40,5 +79,19 @@ namespace Watch_EcommerceBl.UnitOfWorks
         //    }
         //    return _repositories[type] as IGenericRepository<TEntity>;
         //}
+
+        //public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
+        //{
+        //    var type= typeof(TEntity).Name + typeof(TKey).Name;
+
+        //    if (!_repositories.ContainsKey(type))
+        //    {
+        //        var Repository = new GenericRepository<TEntity, TKey>(_context);
+        //        _repositories.Add(type, Repository);
+        //    }
+
+        //    return _repositories[type] as IGenericRepository<TEntity, TKey>;
+        //}
     }
 }
+

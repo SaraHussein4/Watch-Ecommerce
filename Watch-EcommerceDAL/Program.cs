@@ -1,4 +1,10 @@
-﻿namespace Watch_EcommerceDAL
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Watch_EcommerceDAL
 {
     internal class Program
     {

@@ -48,7 +48,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
         }
 
-        public ProductRepository ProdRepo
+        public IGenericRepository<ProductBrand, int> ProductRepository
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 {
                     productRepository = new ProductRepository(_context);
                 }
-                return productRepository;
+                return ProductRepository;
             }
         }
         public async Task<int> CompleteAsync()

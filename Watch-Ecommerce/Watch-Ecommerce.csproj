@@ -8,6 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="MappingProfiles\**" />
+	  <Content Remove="MappingProfiles\**" />
+	  <EmbeddedResource Remove="MappingProfiles\**" />
+	  <None Remove="MappingProfiles\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
@@ -27,7 +34,6 @@
 	<ItemGroup>
 		<Folder Include="Controllers\" />
 		<Folder Include="DTOs\" />
-		<Folder Include="MappingProfiles\" />
 		<Folder Include="wwwroot\" />
 	</ItemGroup>
 

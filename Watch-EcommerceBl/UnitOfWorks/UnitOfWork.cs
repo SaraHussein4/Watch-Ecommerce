@@ -14,11 +14,11 @@ namespace Watch_EcommerceBl.UnitOfWorks
     {
         public TikrContext _context { get; set; }
 
-        //public Hashtable _repositories;
+        public Hashtable _repositories;
         public UnitOfWork(TikrContext dbContext)
         {
             _context = dbContext;
-            //_repositories = new Hashtable();
+            _repositories = new Hashtable();
         }
         public async Task<int> CompleteAsync()
         {
@@ -40,5 +40,18 @@ namespace Watch_EcommerceBl.UnitOfWorks
         //    }
         //    return _repositories[type] as IGenericRepository<TEntity>;
         //}
+
+        public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
+        {
+            var type= typeof(TEntity).Name + typeof(TKey).Name;
+
+            if (!_repositories.ContainsKey(type))
+            {
+                var Repository = new GenericRepository<TEntity, TKey>(_context);
+                _repositories.Add(type, Repository);
+            }
+
+            return _repositories[type] as IGenericRepository<TEntity, TKey>;
+        }
     }
 }

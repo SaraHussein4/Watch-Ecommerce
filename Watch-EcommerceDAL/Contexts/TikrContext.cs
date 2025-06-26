@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Core.model
 {
-    public class TikrContext : IdentityDbContext
+    public class TikrContext : IdentityDbContext<User>
     {
         public TikrContext(DbContextOptions<TikrContext> options): base(options) { }
 

@@ -1,4 +1,8 @@
 
+using ECommerce.Core.model;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Watch_Ecommerce
 {
     public class Program
@@ -14,6 +18,19 @@ namespace Watch_Ecommerce
         
            builder.Services.AddOpenApi();
 
+            #region Database & User Identity
+            builder.Services.AddDbContext<TikrContext>(options =>
+            {
+                options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<TikrContext>()
+                .AddDefaultTokenProviders();
+            #endregion
+
+
+            #region CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -23,6 +40,7 @@ namespace Watch_Ecommerce
                           .AllowAnyMethod();
                 });
             });
+            #endregion
 
             var app = builder.Build();
 

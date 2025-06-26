@@ -4,6 +4,8 @@ using Watch_Ecommerce.Helpers;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 namespace Watch_Ecommerce
 {
     public class Program
@@ -17,10 +19,11 @@ namespace Watch_Ecommerce
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         
-           builder.Services.AddOpenApi();
+            builder.Services.AddOpenApi();
             builder.Services.AddDbContext<TikrContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>

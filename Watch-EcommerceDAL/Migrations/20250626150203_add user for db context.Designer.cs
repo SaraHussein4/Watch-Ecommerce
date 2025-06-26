@@ -4,6 +4,7 @@ using ECommerce.Core.model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Watch_EcommerceDAL.Migrations
 {
     [DbContext(typeof(TikrContext))]
-    partial class TikrContextModelSnapshot : ModelSnapshot
+    [Migration("20250626150203_add user for db context")]
+    partial class adduserfordbcontext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Category", b =>
@@ -75,7 +78,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Favourite", b =>
@@ -90,7 +93,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Favourites");
+                    b.ToTable("Favourite");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Image", b =>
@@ -116,7 +119,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Order", b =>
@@ -178,7 +181,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Product", b =>
@@ -240,7 +243,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("ProductBrandId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.ProductBrand", b =>
@@ -258,7 +261,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductBrands");
+                    b.ToTable("ProductBrand");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.User", b =>

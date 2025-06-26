@@ -1,24 +1,46 @@
-
+using Microsoft.EntityFrameworkCore;
+using Watch_Ecommerce.Helpers;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Watch_EcommerceBl.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Watch_EcommerceBl.UnitOfWorks;
+using Watch_EcommerceBl.Interfaces;
+using Watch_Ecommerce.Services;
 
 namespace Watch_Ecommerce
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        
-           builder.Services.AddOpenApi();
+            builder.Services.AddOpenApi();
+
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
+            builder.Services.AddAuthentication(Options =>
+            {
+
+                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+
+            });
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>
@@ -29,6 +51,7 @@ namespace Watch_Ecommerce
             builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<TikrContext>()
                 .AddDefaultTokenProviders();
+
             #endregion
 
             #region automapper
@@ -53,6 +76,21 @@ namespace Watch_Ecommerce
 
             var app = builder.Build();
 
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider;
+            var loggerFactory = service.GetRequiredService<ILoggerFactory>();
+
+            try
+            {
+                var dbContext = service.GetRequiredService<TikrContext>();
+                await dbContext.Database.MigrateAsync();
+
+            }
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+                logger.LogError(ex, "An error occured during migration");
+            }
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

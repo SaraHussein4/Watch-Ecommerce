@@ -12,10 +12,18 @@ namespace Watch_EcommerceBl.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWorks
     {
+
+        private readonly TikrContext _context;
+        ProductRepository productRepository;
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
 
-        public TikrContext _context { get; set; }
+
+        //public Hashtable _repositories;
+        public UnitOfWork(TikrContext dbContext)
+        {
+            _context = dbContext;
+        }
 
         public IGenericRepository<Category, int> CategoryRepository
         {
@@ -40,12 +48,16 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
         }
 
-
-        //public Hashtable _repositories;
-        public UnitOfWork(TikrContext dbContext)
+        public ProductRepository ProdRepo
         {
-            _context = dbContext;
-            //_repositories = new Hashtable();
+            get
+            {
+                if (productRepository == null)
+                {
+                    productRepository = new ProductRepository(_context);
+                }
+                return productRepository;
+            }
         }
         public async Task<int> CompleteAsync()
         {
@@ -67,5 +79,19 @@ namespace Watch_EcommerceBl.UnitOfWorks
         //    }
         //    return _repositories[type] as IGenericRepository<TEntity>;
         //}
+
+        //public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
+        //{
+        //    var type= typeof(TEntity).Name + typeof(TKey).Name;
+
+        //    if (!_repositories.ContainsKey(type))
+        //    {
+        //        var Repository = new GenericRepository<TEntity, TKey>(_context);
+        //        _repositories.Add(type, Repository);
+        //    }
+
+        //    return _repositories[type] as IGenericRepository<TEntity, TKey>;
+        //}
     }
 }
+

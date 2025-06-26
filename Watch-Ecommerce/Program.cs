@@ -19,14 +19,7 @@ namespace Watch_Ecommerce
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
-            builder.Services.AddIdentity<User , IdentityRole>(Options =>
-            {
-                Options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<TikrContext>()
-            .AddDefaultTokenProviders();
-            ;
-            builder.Services.AddAutoMapper(typeof(MappingProfiles));
-            builder.Services.AddScoped<IUnitOfWorks , UnitOfWork>();
+
             builder.Services.AddScoped<ITokenService, TokenService>();
 
             builder.Services.AddAuthentication(Options =>
@@ -55,9 +48,15 @@ namespace Watch_Ecommerce
                 options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<TikrContext>()
+                .AddDefaultTokenProviders();
+
             #endregion
 
+            #region automapper
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+            #endregion
 
             #region CORS
             builder.Services.AddCors(options =>
@@ -69,6 +68,10 @@ namespace Watch_Ecommerce
                           .AllowAnyMethod();
                 });
             });
+            #endregion
+
+            #region UnitOfWork
+            builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
 
             var app = builder.Build();

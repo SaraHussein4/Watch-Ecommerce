@@ -27,14 +27,13 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Controllers\" />
-		<Folder Include="DTOs\" />
-		<Folder Include="wwwroot\" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
 
 </Project>

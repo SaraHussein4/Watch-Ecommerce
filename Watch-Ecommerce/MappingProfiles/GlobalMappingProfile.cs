@@ -4,38 +4,38 @@ using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
 
-namespace Watch_Ecommerce.Helpers
+namespace Watch_Ecommerce.MappingProfiles
 {
-    public class MappingProfiles : Profile
+    public class GlobalMappingProfile: Profile
     {
-        public MappingProfiles()
+        public GlobalMappingProfile()
         {
             #region Category
-            CreateMap<CategoryCreateDTO, Category>()
-                .ReverseMap();
-    
             CreateMap<Category, CategoryReadDTO>()
-                .ReverseMap();
+            .ReverseMap();
+            
+            CreateMap<CategoryCreateDTO,Category>()
+            .ReverseMap();
 
             CreateMap<CategoryUpdateDTO, Category>()
-                .ReverseMap();
+            .ReverseMap();
             #endregion
-            #region ProductBrand
-            CreateMap<ProductBrandCreateDTO, ProductBrand>()
-                .ReverseMap();
 
+            #region Product Brand
             CreateMap<ProductBrand, ProductBrandReadDTO>()
-                .ReverseMap();
+            .ReverseMap();
+
+            CreateMap<ProductBrandCreateDTO, ProductBrand>()
+            .ReverseMap();
 
             CreateMap<ProductBrandUpdateDTO, ProductBrand>()
-                .ReverseMap();
+            .ReverseMap();
             #endregion
 
             #region Product
             CreateMap<Product, ProductReadDTO>()
                 .ReverseMap();
             #endregion
-
         }
     }
 }

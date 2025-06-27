@@ -1,3 +1,4 @@
+
 ﻿using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Http;
@@ -7,12 +8,14 @@ using Watch_Ecommerce.DTOS.Product;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.UnitOfWorks;
 
+
 namespace Watch_Ecommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
+
         private readonly UnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
@@ -118,3 +121,5 @@ namespace Watch_Ecommerce.Controllers
         }
     }
 }
+
+

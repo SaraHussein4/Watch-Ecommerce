@@ -16,10 +16,10 @@ namespace Watch_Ecommerce.Controllers
     public class ProductController : ControllerBase
     {
 
-        private readonly UnitOfWork unitOfWork;
+        private readonly IUnitOfWorks unitOfWork;
         private readonly IMapper mapper;
 
-        public ProductController(UnitOfWork unitOfWork, IMapper mapper)
+        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -57,6 +57,7 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Error retrieving product: {ex.Message}");
             }
         }
+        
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] AddProductDTO productDto)
         {
@@ -65,15 +66,33 @@ namespace Watch_Ecommerce.Controllers
 
             try
             {
+                // Lookup CategoryId
+                var categories = await unitOfWork.CategoryRepository.GetAllAsync();
+                var category = categories.FirstOrDefault(c => c.Name.ToLower() == productDto.CategoryName.ToLower());
+
+                // Lookup BrandId
+                var brands = await unitOfWork.ProductBrandRepository.GetAllAsync();
+                var brand = brands.FirstOrDefault(b => b.Name.ToLower() == productDto.ProductBrandName.ToLower());
+
+                if (category == null || brand == null)
+                {
+                    return BadRequest("Invalid Category or Brand name.");
+                }
+
+                // Map DTO to Entity
                 var product = mapper.Map<Product>(productDto);
+                product.CategoryId = category.Id;
+                product.ProductBrandId = brand.Id;
+
                 await unitOfWork.ProductRepository.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 
-                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+                var productReadDTO = mapper.Map<ProductReadDTO>(product);
+                return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productReadDTO);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error creating product: {ex.Message}");
+                return StatusCode(500, $"Error creating product: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
 
@@ -89,19 +108,32 @@ namespace Watch_Ecommerce.Controllers
                 if (existingProduct == null)
                     return NotFound($"Product with ID {id} not found.");
 
-                // Map updated values to existing product (overwrites only mapped properties)
+                // Lookup Category and Brand by name
+                var category = (await unitOfWork.CategoryRepository.GetAllAsync())
+                                    .FirstOrDefault(c => c.Name.ToLower() == productDto.CategoryName.ToLower());
+                var brand = (await unitOfWork.ProductBrandRepository.GetAllAsync())
+                                    .FirstOrDefault(b => b.Name.ToLower() == productDto.ProductBrandName.ToLower());
+
+                if (category == null || brand == null)
+                    return BadRequest("Invalid Category or Brand name.");
+
+                // Map updated values
                 mapper.Map(productDto, existingProduct);
+                existingProduct.CategoryId = category.Id;
+                existingProduct.ProductBrandId = brand.Id;
 
                 await unitOfWork.ProductRepository.UpdateAsync(existingProduct);
                 await unitOfWork.CompleteAsync();
 
-                return Ok(existingProduct);
+                var productReadDTO = mapper.Map<ProductReadDTO>(existingProduct);
+                return Ok(productReadDTO);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error updating product: {ex.Message}");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id) { 

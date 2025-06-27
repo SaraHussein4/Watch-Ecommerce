@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Watch_Ecommerce.DTOs;
 using Watch_Ecommerce.Services;
+using Watch_EcommerceBl.Interfaces;
 
 namespace Watch_Ecommerce.Controllers
 {
@@ -15,56 +16,65 @@ namespace Watch_Ecommerce.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IGenericRepository<Address, int> _addressRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AccountController(UserManager<User> userManager , SignInManager<User> signInManager , ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<User> userManager , SignInManager<User> signInManager , ITokenService tokenService, IMapper mapper, IGenericRepository<Address,int> addressRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _addressRepository = addressRepository;
             _mapper = mapper;
         }
 
         [HttpPost("Register")]
-
         public async Task<ActionResult<UserDto>> Register(RegisterDto model)
         {
-            if (CheckEmailExists(model.Email).Result.Value)
+            if ((await CheckEmailExists(model.Email)).Value)
             {
                 return BadRequest("This Email Is Already Exist");
             }
 
-            var user = new User()
+            var user = new User
             {
                 Name = model.Name,
                 Email = model.Email,
                 UserName = model.Email.Split('@')[0],
                 PhoneNumber = model.PhoneNumber,
             };
-            var Result = await _userManager.CreateAsync(user, model.Password);
-            await _userManager.AddToRoleAsync(user, "User");
-            if (!Result.Succeeded)
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
             {
-                var errors = Result.Errors.Select(e => e.Description).ToArray();
-                return BadRequest(new
-                {
-                    statusCode = 400,
-                    errors = errors
-                });
+                var errors = result.Errors.Select(e => e.Description).ToArray();
+                return BadRequest(new { statusCode = 400, errors });
             }
+
             await _userManager.AddToRoleAsync(user, "User");
 
-            var returnerUser = new UserDto()
+            var address = new Address
+            {
+                BuildingNumber = model.BuildingNumber,
+                Street = model.Street,
+                State = model.State,
+                IsDefault = model.IsDefault,
+                UserId = user.Id
+            };
+
+            await _addressRepository.AddAsync(address);
+
+            var returnUser = new UserDto
             {
                 Name = model.Name,
                 Email = model.Email,
                 Token = await _tokenService.CreateTokenAsync(user, _userManager),
                 Role = "User"
-
             };
-            return Ok(returnerUser);
-        
+
+            return Ok(returnUser);
         }
+
 
         [HttpPost("Login")]
 

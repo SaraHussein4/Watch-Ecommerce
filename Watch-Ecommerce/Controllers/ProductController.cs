@@ -32,7 +32,7 @@ namespace Watch_Ecommerce.Controllers
                 var products = await unitOfWork.ProductRepository.GetAllAsync();
 
                 // Map to DTOs
-                var productDTOs = mapper.Map<IEnumerable<ProductReadDTO>>(products);
+                var productDTOs = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
                 return Ok(productDTOs);
             }
             catch (Exception ex)
@@ -49,7 +49,7 @@ namespace Watch_Ecommerce.Controllers
                 if (product == null)
                     return NotFound($"Product with ID {id} not found.");
 
-                var productDTO = mapper.Map<ProductReadDTO>(product); 
+                var productDTO = mapper.Map<DisplayProductDTO>(product); 
                 return Ok(productDTO);
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace Watch_Ecommerce.Controllers
                 await unitOfWork.ProductRepository.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 
-                var productReadDTO = mapper.Map<ProductReadDTO>(product);
+                var productReadDTO = mapper.Map<DisplayProductDTO>(product);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productReadDTO);
             }
             catch (Exception ex)
@@ -125,12 +125,13 @@ namespace Watch_Ecommerce.Controllers
                 await unitOfWork.ProductRepository.UpdateAsync(existingProduct);
                 await unitOfWork.CompleteAsync();
 
-                var productReadDTO = mapper.Map<ProductReadDTO>(existingProduct);
+                var productReadDTO = mapper.Map<DisplayProductDTO>(existingProduct);
                 return Ok(productReadDTO);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error updating product: {ex.Message}");
+                return StatusCode(500, $"Error creating product: {ex.InnerException?.Message ?? ex.Message}");
+
             }
         }
 

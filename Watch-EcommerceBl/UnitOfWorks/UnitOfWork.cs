@@ -52,20 +52,20 @@ namespace Watch_EcommerceBl.UnitOfWorks
         //    return _repositories[type] as IGenericRepository<TEntity>;
         //}
 
-        public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
-        {
-            var type= typeof(TEntity).Name + typeof(TKey).Name;
+        //public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
+        //{
+        //    var type= typeof(TEntity).Name + typeof(TKey).Name;
 
-            if (!_repositories.ContainsKey(type))
-            {
-                var Repository = new GenericRepository<TEntity, TKey>(_context);
-                _repositories.Add(type, Repository);
-            }
+        //    if (!_repositories.ContainsKey(type))
+        //    {
+        //        var Repository = new GenericRepository<TEntity, TKey>(_context);
+        //        _repositories.Add(type, Repository);
+        //    }
 
-            return _repositories[type] as IGenericRepository<TEntity, TKey>;
-        }
+        //    return _repositories[type] as IGenericRepository<TEntity, TKey>;
+        //}
     }
 }
-    }
+    
 
 

@@ -33,7 +33,9 @@ namespace Watch_Ecommerce.Helpers
             #endregion
 
             #region Product
-            CreateMap<Product, ProductReadDTO>()
+            CreateMap<Product, ProductReadDTO>().ReverseMap();
+
+            CreateMap<Product, DisplayProductDTO>()
                .AfterMap((src, dest) => {
                    dest.CategoryName = src.Category?.Name;
                    dest.ProductBrandName = src.ProductBrand?.Name;

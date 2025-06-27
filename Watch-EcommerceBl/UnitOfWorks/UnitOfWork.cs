@@ -12,15 +12,43 @@ namespace Watch_EcommerceBl.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWorks
     {
+
         private readonly TikrContext _context;
         ProductRepository productRepository;
+        public IGenericRepository<Category, int> categoryRepository;
+        public IGenericRepository<ProductBrand, int> productBrandRepository;
 
+
+        //public Hashtable _repositories;
         public UnitOfWork(TikrContext dbContext)
         {
             _context = dbContext;
         }
 
-        public ProductRepository ProdRepo
+        public IGenericRepository<Category, int> CategoryRepository
+        {
+            get
+            {
+                if (categoryRepository == null) {
+                    categoryRepository = new GenericRepository<Category, int>(_context);
+                }
+                return categoryRepository;
+            }
+        }
+
+        public IGenericRepository<ProductBrand, int> ProductBrandRepository
+        {
+            get
+            {
+                if (productBrandRepository == null)
+                {
+                    productBrandRepository = new GenericRepository<ProductBrand, int>(_context);
+                }
+                return productBrandRepository;
+            }
+        }
+
+        public IGenericRepository<ProductBrand, int> ProductRepository
         {
             get
             {
@@ -28,7 +56,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 {
                     productRepository = new ProductRepository(_context);
                 }
-                return productRepository;
+                return ProductRepository;
             }
         }
         public async Task<int> CompleteAsync()
@@ -66,6 +94,4 @@ namespace Watch_EcommerceBl.UnitOfWorks
         //}
     }
 }
-    
-
 

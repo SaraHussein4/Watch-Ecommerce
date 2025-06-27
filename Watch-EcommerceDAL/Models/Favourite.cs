@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace ECommerce.Core.model
 {
     public class Favourite
     {
+        [Key]
+        public int FavId { get; set; }
         public string UserId { get; set; }
         public int ProductId { get; set; }
 

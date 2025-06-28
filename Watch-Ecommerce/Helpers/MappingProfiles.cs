@@ -61,7 +61,7 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<Favourite, FavDto>().AfterMap((src, dst) =>
             {
                 dst.ProductId = src.ProductId;
-                dst.ProductName=src.Product !=null? src.Product.Name:null;
+                //dst.ProductName=src.Product !=null? src.Product.Name:null;
             }).ReverseMap();
             #endregion
         }

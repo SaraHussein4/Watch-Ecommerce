@@ -14,10 +14,6 @@ namespace Watch_EcommerceBl.Interfaces
 
         IGenericRepository<Product, int> ProductRepository { get; }
 
-        public IGenericRepository<ProductBrand, int> ProductRepository
-        {
-            get;
-        }
         public IProductRepository productrepo
         {
             get;

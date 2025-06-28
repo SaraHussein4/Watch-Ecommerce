@@ -9,8 +9,7 @@ namespace ECommerce.Core.model
 {
     public class Favourite
     {
-        [Key]
-        public int FavId { get; set; }
+       
         public string UserId { get; set; }
         public int ProductId { get; set; }
 

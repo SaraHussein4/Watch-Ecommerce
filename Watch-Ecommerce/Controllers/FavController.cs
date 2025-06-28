@@ -31,9 +31,9 @@ namespace Watch_Ecommerce.Controllers
                 if (userclaims == null)
                     return Unauthorized("User not authenticated");
                 string userId = userclaims.Value;
-                var prodName = await UOW.productrepo.GetProdByName(favDto.ProductName);
-                if(prodName == null) return NotFound("Product not found");
-                int productId = prodName.Id;
+                var prod = await UOW.productrepo.GetProductByIdAsync(favDto.ProductId);
+                if(prod == null) return NotFound("Product not found");
+                int productId = prod.Id;
                 Favourite myFav= await UOW.FavoriteRepo.AddToFav(userId, productId);
                 if (myFav == null) return BadRequest("Failed to add item to Favourite.");
                 UOW.CompleteAsync();

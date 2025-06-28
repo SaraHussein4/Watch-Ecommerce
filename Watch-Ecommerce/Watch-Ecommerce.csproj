@@ -31,7 +31,10 @@
     <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
   </ItemGroup>
   <ItemGroup>
+
     <Folder Include="Controllers\" />
+
+
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

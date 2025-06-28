@@ -19,6 +19,9 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<ProductBrand, int> productBrandRepository;
        IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
+
+
+
         //public Hashtable _repositories;
         public UnitOfWork(TikrContext dbContext)
         {
@@ -49,6 +52,8 @@ namespace Watch_EcommerceBl.UnitOfWorks
         }
         
         public IGenericRepository<ProductBrand, int> ProductRepository
+
+        public IGenericRepository<Product, int> ProductRepository
         {
             get
             {
@@ -56,7 +61,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 {
                     productRepository = new ProductRepository(_context);
                 }
-                return ProductRepository;
+                return productRepository;
             }
         }
         //product
@@ -84,6 +89,9 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
             
         }
+
+       
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

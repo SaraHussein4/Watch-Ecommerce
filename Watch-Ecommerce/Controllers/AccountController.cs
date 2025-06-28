@@ -42,7 +42,7 @@ namespace Watch_Ecommerce.Controllers
                 PhoneNumber = model.PhoneNumber,
             };
             var Result = await _userManager.CreateAsync(user, model.Password);
-            await _userManager.AddToRoleAsync(user, "User");
+            //await _userManager.AddToRoleAsync(user, "User");
             if (!Result.Succeeded)
             {
                 var errors = Result.Errors.Select(e => e.Description).ToArray();

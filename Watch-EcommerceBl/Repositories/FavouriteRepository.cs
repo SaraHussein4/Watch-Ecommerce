@@ -9,7 +9,7 @@ using Watch_EcommerceBl.Interfaces;
 
 namespace Watch_EcommerceBl.Repositories
 {
-    internal class FavouriteRepository : GenericRepository<Favourite, int>, IFavouriteRepository
+    public class FavouriteRepository : GenericRepository<Favourite, int>, IFavouriteRepository
     {
         TikrContext con;
         public FavouriteRepository(TikrContext con) : base(con)

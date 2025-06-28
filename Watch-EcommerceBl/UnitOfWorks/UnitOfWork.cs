@@ -52,9 +52,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
 
 
         public IGenericRepository<Product, int> ProductRepository
-
-        //public IGenericRepository<ProductBrand, int> ProductRepository
-
         {
             get
             {
@@ -65,6 +62,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return productRepository;
             }
         }
+
 
         //product
         public IProductRepository productrepo
@@ -92,7 +90,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
             
         }
 
-       
+        IGenericRepository<Product, int> IUnitOfWorks.ProductRepository => throw new NotImplementedException();
 
 
         public async Task<int> CompleteAsync()

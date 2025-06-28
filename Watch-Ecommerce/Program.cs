@@ -8,6 +8,7 @@ using System.Text;
 using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceBl.Interfaces;
 using Watch_Ecommerce.Services;
+using Watch_EcommerceBl.Repositories;
 
 namespace Watch_Ecommerce
 {
@@ -21,7 +22,7 @@ namespace Watch_Ecommerce
             builder.Services.AddOpenApi();
 
             builder.Services.AddScoped<ITokenService, TokenService>();
-
+            builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             builder.Services.AddAuthentication(Options =>
             {
 
@@ -109,5 +110,6 @@ namespace Watch_Ecommerce
 
             app.Run();
         }
+
     }
 }

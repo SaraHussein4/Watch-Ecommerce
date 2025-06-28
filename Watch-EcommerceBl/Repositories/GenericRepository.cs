@@ -24,6 +24,7 @@ namespace Watch_EcommerceBl.Repositories
         public async Task AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Tkey id)

@@ -27,5 +27,10 @@ namespace Watch_Ecommerce.DTOs
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password Doesn't Match")]
         public string ConfirmPassword { get; set; }
+
+        public int BuildingNumber { get; set; }
+        public string Street { get; set; }
+        public string State { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

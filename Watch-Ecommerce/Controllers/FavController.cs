@@ -25,8 +25,8 @@ namespace Watch_Ecommerce.Controllers
         public async Task<IActionResult> AddProductToFavorite(FavDto favDto)
         {
             if (favDto == null) return BadRequest();
-            if (ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
                 var userclaims = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (userclaims == null)
                     return Unauthorized("User not authenticated");
@@ -34,13 +34,13 @@ namespace Watch_Ecommerce.Controllers
                 var prod = await UOW.productrepo.GetProductByIdAsync(favDto.ProductId);
                 if(prod == null) return NotFound("Product not found");
                 int productId = prod.Id;
-                Favourite myFav= await UOW.FavoriteRepo.AddToFav(userId, productId);
+               var myFav= await UOW.FavoriteRepo.AddToFav(userId, productId);
                 if (myFav == null) return BadRequest("Failed to add item to Favourite.");
-                UOW.CompleteAsync();
+                await UOW.CompleteAsync();
                 var myFavDto=mapper.Map<FavDto>(myFav);
                 return Ok(myFavDto);
-            }
-            return BadRequest(ModelState);
+            
+            //return BadRequest(ModelState);
         }
     }
 }

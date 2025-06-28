@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
+using Watch_Ecommerce.DTOs.Fav;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Product;
@@ -56,6 +57,12 @@ namespace Watch_Ecommerce.Helpers
 
             #endregion
 
+            #region
+            CreateMap<Favourite, FavDto>().AfterMap((src, dst) =>
+            {
+                dst.ProductName=src.ProductId.ToString();
+            }).ReverseMap();
+            #endregion
         }
     }
 }

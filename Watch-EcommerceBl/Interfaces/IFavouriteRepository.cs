@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Watch_EcommerceBl.Interfaces
 {
-    internal interface IFavouriteRepository:IGenericRepository<Favourite,int>
+    public interface IFavouriteRepository:IGenericRepository<Favourite,int>
     {
         public  Task<Favourite> AddToFav(string userid, int productid);
 

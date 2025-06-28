@@ -43,9 +43,9 @@ namespace Watch_Ecommerce.Controllers
                 UserName = model.Email.Split('@')[0],
                 PhoneNumber = model.PhoneNumber,
             };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
+            var Result = await _userManager.CreateAsync(user, model.Password);
+            //await _userManager.AddToRoleAsync(user, "User");
+            if (!Result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description).ToArray();
                 return BadRequest(new { statusCode = 400, errors });

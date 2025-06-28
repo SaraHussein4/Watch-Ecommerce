@@ -17,8 +17,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
         ProductRepository productRepository;
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
-
-       IProductRepository _productrepo;
+        IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
 
         //public Hashtable _repositories;
@@ -51,6 +50,20 @@ namespace Watch_EcommerceBl.UnitOfWorks
         }
 
 
+
+        public IGenericRepository<Product, int> ProductRepository
+        {
+            get
+            {
+                if (productRepository == null)
+                {
+                    productRepository = new ProductRepository(_context);
+                }
+                return productRepository;
+            }
+        }
+
+
         //product
         public IProductRepository productrepo
         {
@@ -76,7 +89,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
             
         }
-
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

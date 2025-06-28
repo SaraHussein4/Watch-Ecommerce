@@ -77,8 +77,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
             
         }
 
-        IGenericRepository<Product, int> IUnitOfWorks.ProductRepository => throw new NotImplementedException();
-
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

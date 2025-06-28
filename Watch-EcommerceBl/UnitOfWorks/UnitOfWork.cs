@@ -17,10 +17,7 @@ namespace Watch_EcommerceBl.UnitOfWorks
         ProductRepository productRepository;
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
-
-
-
-       IProductRepository _productrepo;
+        IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
 
         //public Hashtable _repositories;
@@ -51,16 +48,12 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return productBrandRepository;
             }
         }
-        
-        public IGenericRepository<ProductBrand, int> ProductRepository
+
+
 
         public IGenericRepository<Product, int> ProductRepository
 
-
-        public IGenericRepository<Product, int> ProductRepository
-
-        
-        public IGenericRepository<ProductBrand, int> ProductRepository
+        //public IGenericRepository<ProductBrand, int> ProductRepository
 
         {
             get

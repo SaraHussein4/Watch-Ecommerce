@@ -16,6 +16,5 @@ namespace Watch_EcommerceBl.Interfaces
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TKey id);
         Task<bool> ExistsAsync(TKey id);
-        Task AddAsync(Product product);
     }
 }

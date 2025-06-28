@@ -57,5 +57,10 @@ namespace Watch_EcommerceBl.Repositories
         {
             _dbSet.Update(entity);
         }
+       public async Task AddAsync(Product product)
+        {
+           throw new NotImplementedException();
+        }
+
     }
 }

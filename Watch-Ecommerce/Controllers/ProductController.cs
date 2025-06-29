@@ -1,10 +1,12 @@
 
-﻿using AutoMapper;
+using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Product;
+using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.UnitOfWorks;
 
@@ -18,11 +20,13 @@ namespace Watch_Ecommerce.Controllers
 
         private readonly IUnitOfWorks unitOfWork;
         private readonly IMapper mapper;
+        private readonly IImageManagementService _imageManagementService;
 
-        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper)
+        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper, IImageManagementService imageManagementService)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            _imageManagementService = imageManagementService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
@@ -59,27 +63,56 @@ namespace Watch_Ecommerce.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct([FromBody] AddProductDTO productDto)
+        [Consumes("multipart/form-data")] // Explicitly require multipart
+        public async Task<IActionResult> AddProduct([FromForm] ProductCreateDTO productCreateDTO)
         {
-            if (productDto == null)
+            if (productCreateDTO == null)
                 return BadRequest("Product data is null.");
 
             try
             {
-                var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productDto.CategoryId);
-                var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productDto.ProductBrandId);
+                var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productCreateDTO.CategoryId);
+                var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productCreateDTO.ProductBrandId);
                 if (!categoryExists || !brandExists)
                     return BadRequest("Invalid CategoryId or ProductBrandId.");
 
-                var product = mapper.Map<Product>(productDto);
-
-                if (productDto.Images != null && productDto.Images.Any())
-                {
-                    product.Images = mapper.Map<List<Image>>(productDto.Images);
-                }
-
+                var product = mapper.Map<Product>(productCreateDTO);
                 await unitOfWork.productrepo.AddAsync(product);
                 await unitOfWork.CompleteAsync();
+
+
+                if (productCreateDTO.Images != null && productCreateDTO.Images.Any())
+                {
+                    List<string> ImagePath = await _imageManagementService.AddImageAsync(productCreateDTO.Images, productCreateDTO.Name);
+                    List<Image> Images = new List<Image>();
+                    for(int i = 0;i < ImagePath.Count(); ++i)
+                    {
+                        if(i == 0)
+                        {
+                            Images.Add(new Image
+                            {
+                                Url = ImagePath[i],
+                                isPrimary = true,
+                                ProductId = product.Id
+                            });
+                        }
+                        else
+                        {
+                            Images.Add(new Image
+                            {
+                                Url = ImagePath[i],
+                                isPrimary = false,
+                                ProductId = product.Id
+                            });
+                        }
+                    }
+
+                    await unitOfWork.ImageRepository.AddRangeAsync(Images);
+                    await unitOfWork.CompleteAsync();
+ 
+                   //product.Images = mapper.Map<List<Image>>(productDto.Images);
+                }
+
 
                 var productReadDTO = mapper.Map<DisplayProductDTO>(product);
                 return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, productReadDTO);

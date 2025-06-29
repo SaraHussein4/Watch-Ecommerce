@@ -10,6 +10,7 @@ using Watch_EcommerceBl.Interfaces;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Repositories;
 using StackExchange.Redis;
+using Microsoft.Extensions.FileProviders;
 
 namespace Watch_Ecommerce
 {
@@ -23,26 +24,13 @@ namespace Watch_Ecommerce
             builder.Services.AddOpenApi();
 
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped<IImageManagementService, ImageManagementService>();
+            builder.Services.AddSingleton<IFileProvider>
+                (new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
-            builder.Services.AddAuthentication(Options =>
-            {
+            builder.Services.AddScoped<ICartRepository, CartRepositry>();
 
-                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true
-                };
-
-            });
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>
@@ -78,9 +66,32 @@ namespace Watch_Ecommerce
             });
             #endregion
 
+
+            builder.Services.AddAuthentication(Options =>
+            {
+
+                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+
+            });
+            builder.Services.AddAuthorization();
+
             #region UnitOfWork
             builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
+
 
             var app = builder.Build();
 

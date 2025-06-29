@@ -23,6 +23,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.6" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
 	</ItemGroup>
@@ -32,8 +34,9 @@
   </ItemGroup>
   <ItemGroup>
 
+    <Folder Include="DTOS\OrderDTOS\" />
 
-    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

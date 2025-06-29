@@ -60,10 +60,9 @@ namespace Watch_Ecommerce
                 });
             });
             #endregion
-
-
             builder.Services.AddAuthentication(Options =>
             {
+
 
                 Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options => {
@@ -81,8 +80,6 @@ namespace Watch_Ecommerce
                 };
 
             });
-            builder.Services.AddAuthorization();
-
             builder.Services.AddAuthorization();
 
             #region UnitOfWork

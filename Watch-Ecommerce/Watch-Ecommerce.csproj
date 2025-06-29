@@ -30,8 +30,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
   </ItemGroup>
-
   <ItemGroup>
+
+
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

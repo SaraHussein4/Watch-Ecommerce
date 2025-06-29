@@ -24,25 +24,7 @@ namespace Watch_Ecommerce
 
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
-            builder.Services.AddAuthentication(Options =>
-            {
-
-                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true
-                };
-
-            });
+          
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>
@@ -77,11 +59,31 @@ namespace Watch_Ecommerce
                 });
             });
             #endregion
+            builder.Services.AddAuthentication(Options =>
+            {
+
+
+                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+
+            });
+            builder.Services.AddAuthorization();
 
             #region UnitOfWork
             builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
-
             var app = builder.Build();
 
             var scope = app.Services.CreateScope();

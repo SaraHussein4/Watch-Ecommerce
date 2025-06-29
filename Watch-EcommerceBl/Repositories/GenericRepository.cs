@@ -24,7 +24,7 @@ namespace Watch_EcommerceBl.Repositories
         public async Task AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Tkey id)
@@ -58,10 +58,10 @@ namespace Watch_EcommerceBl.Repositories
         {
             _dbSet.Update(entity);
         }
-       public async Task AddAsync(Product product)
-        {
-           throw new NotImplementedException();
-        }
 
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+        }
     }
 }

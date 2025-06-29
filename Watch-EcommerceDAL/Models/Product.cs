@@ -26,12 +26,12 @@ namespace ECommerce.Core.model
         public int CategoryId { get; set; }
         
         // Navigation Property
-        public virtual ProductBrand ProductBrand { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual ProductBrand? ProductBrand { get; set; }
+        public virtual Category? Category { get; set; }
 
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
-        public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Favourite> Users { get; set; }
+        public virtual ICollection<OrderItem>? OrderItems { get; set; }
+        public virtual ICollection<Image>? Images { get; set; }
+        public virtual ICollection<Favourite>? Users { get; set; }
 
 
     }

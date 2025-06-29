@@ -167,6 +167,7 @@ namespace ECommerce.Core.model
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands{ get; set; }
 
+        public DbSet<Order> Orders { get; set; }
         public DbSet<Governorate> Governorates { get; set; }
 
         public  DbSet<Deliverymethod> Deliverymethods { get; set; }

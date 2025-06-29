@@ -14,7 +14,6 @@ namespace ECommerce.Core.model
         public string Status { get; set; }
         public decimal Amount {  get; set; }
 
-
         public OrderAddress OrderAddress { get; set; }
         public int DeliveryMethodId { get; set; }
         public virtual Deliverymethod Deliverymethod { get; set; }

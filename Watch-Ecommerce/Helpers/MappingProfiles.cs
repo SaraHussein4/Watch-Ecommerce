@@ -37,10 +37,18 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<Product, ProductReadDTO>().ReverseMap();
 
             CreateMap<Product, DisplayProductDTO>().ReverseMap();
+
             CreateMap<AddProductDTO, Product>().ReverseMap();
+            
             CreateMap<Product, UpdateProductDTO>().ReverseMap();
+            
             CreateMap<Image, ImageDTO>().ReverseMap();
 
+
+            CreateMap<ProductCreateDTO, Product>()
+                .ForMember(src => src.Images, 
+                            opt => opt.Ignore())
+                .ReverseMap();
             #endregion
 
             #region fav

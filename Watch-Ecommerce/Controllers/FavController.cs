@@ -38,7 +38,7 @@ namespace Watch_Ecommerce.Controllers
                 int productId = prod.Id;
                 var myFav= await UOW.FavoriteRepo.AddToFav(userId, productId);
                 if (myFav == null) return BadRequest("Failed to add item to Favourite.");
-                UOW.CompleteAsync();
+                await UOW.CompleteAsync();
                 var myFavDto=mapper.Map<FavDto>(myFav);
                 return Ok(myFavDto);
             

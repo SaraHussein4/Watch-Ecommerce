@@ -36,7 +36,7 @@
 
     <Folder Include="DTOS\OrderDTOS\" />
 
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\Images" />
   </ItemGroup>
 
 </Project>

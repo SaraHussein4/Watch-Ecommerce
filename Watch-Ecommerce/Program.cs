@@ -9,6 +9,7 @@ using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceBl.Interfaces;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Repositories;
+using StackExchange.Redis;
 
 namespace Watch_Ecommerce
 {
@@ -35,6 +36,12 @@ namespace Watch_Ecommerce
                 .AddEntityFrameworkStores<TikrContext>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.AddSingleton<IConnectionMultiplexer>(Options =>
+            {
+                var Connection = builder.Configuration.GetConnectionString("RedisConnection");
+                return ConnectionMultiplexer.Connect(Connection);
+            });
+
             #endregion
 
             #region automapper
@@ -55,6 +62,7 @@ namespace Watch_Ecommerce
             builder.Services.AddAuthentication(Options =>
             {
 
+
                 Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options => {
                 options.RequireHttpsMetadata = false;
@@ -72,6 +80,7 @@ namespace Watch_Ecommerce
 
             });
             builder.Services.AddAuthorization();
+
             #region UnitOfWork
             builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion

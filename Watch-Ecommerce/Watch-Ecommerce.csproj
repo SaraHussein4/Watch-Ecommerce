@@ -37,8 +37,9 @@
     <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
   </ItemGroup>
   <ItemGroup>
-
     <Folder Include="wwwroot\" />
+    <Folder Include="DTOS\OrderDTOS\" />
+    <Folder Include="wwwroot\Images" />
   </ItemGroup>
 
 </Project>

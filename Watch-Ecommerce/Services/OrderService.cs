@@ -20,6 +20,7 @@ namespace Watch_Ecommerce.Services
             var basket = await _cartRepository.GetBasketAsync(userId);
             if (basket == null || !basket.Items.Any())
                 return null;
+          
             var deliveryMethod = await _context.Deliverymethods.FindAsync(deliveryMethodId);
             if (deliveryMethod == null)
                 return null;
@@ -56,6 +57,7 @@ namespace Watch_Ecommerce.Services
 
             return order;
         }
+      
         public async Task<Order> GetOrderByIdAsynce(int id)
         {
             return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
@@ -68,6 +70,7 @@ namespace Watch_Ecommerce.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
 
 
     }

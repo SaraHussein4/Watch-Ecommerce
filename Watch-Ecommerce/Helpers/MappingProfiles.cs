@@ -3,6 +3,7 @@ using ECommerce.Core.model;
 using Watch_Ecommerce.DTOs.Fav;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
+using Watch_Ecommerce.DTOS;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
@@ -55,7 +56,7 @@ namespace Watch_Ecommerce.Helpers
             #endregion
 
             #region fav
-            CreateMap<Favourite, FavDto>().AfterMap((src, dst) =>
+            CreateMap<Favourite, FavDTO>().AfterMap((src, dst) =>
             {
                 dst.ProductId = src.ProductId;
 

@@ -30,11 +30,12 @@ namespace Watch_EcommerceBl.Repositories
              await con.SaveChangesAsync();
             return newFav;
         }
-        public async Task<bool> RemoveFromFav(int favid)
+        public async Task<bool> RemoveFromFav(string userid, int productid)
         {
-            var myFavWatch = await con.Favourites.FirstOrDefaultAsync(f => f.FavId == favid);
-            if (myFavWatch == null) 
-                throw new KeyNotFoundException("The item does not exist in the favorites");
+            var myFavWatch = await con.Favourites.FirstOrDefaultAsync(f=>f.UserId == userid
+            && f.ProductId == productid);
+            if (myFavWatch == null)
+                return false;
             con.Favourites.Remove(myFavWatch);
             await con.SaveChangesAsync();
             return true;

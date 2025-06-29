@@ -32,7 +32,7 @@ namespace Watch_EcommerceBl.Repositories
         }
         public async Task<bool> RemoveFromFav(string userid, int productid)
         {
-            var myFavWatch = await con.Favourites.FirstOrDefaultAsync(f=>f.UserId == userid
+            var myFavWatch = await con.Favourites.FirstOrDefaultAsync(f => f.UserId == userid
             && f.ProductId == productid);
             if (myFavWatch == null)
                 return false;

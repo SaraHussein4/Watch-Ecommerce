@@ -21,7 +21,6 @@ namespace Watch_Ecommerce.Controllers
             this.mapper = mapper;
             this.UOW = UOW;
         }
-        
         [HttpPost]
         public async Task<IActionResult> AddProductToFavorite(FavDto favDto)
         {
@@ -67,5 +66,6 @@ namespace Watch_Ecommerce.Controllers
             await UOW.CompleteAsync();
             return Ok("Item removed successfully");
         }
+
     }
 }

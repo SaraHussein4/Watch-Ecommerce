@@ -29,6 +29,8 @@ namespace Watch_Ecommerce
                 (new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
 
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+            builder.Services.AddScoped<ICartRepository, CartRepositry>();
+
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>

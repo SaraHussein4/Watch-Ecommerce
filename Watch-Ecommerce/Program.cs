@@ -24,7 +24,8 @@ namespace Watch_Ecommerce
 
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
-          
+            builder.Services.AddScoped<ICartRepository, CartRepositry>();
+
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>

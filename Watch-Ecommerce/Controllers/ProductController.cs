@@ -29,7 +29,7 @@ namespace Watch_Ecommerce.Controllers
         {
             try
             {
-                var products = await unitOfWork.ProductRepository.GetAllAsync();
+                var products = await unitOfWork.productrepo.GetAllAsync();
 
                 // Map to DTOs
                 var productDTOs = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
@@ -45,7 +45,7 @@ namespace Watch_Ecommerce.Controllers
         {
             try
             {
-                var product = await unitOfWork.ProductRepository.GetByIdAsync(id);
+                var product = await unitOfWork.productrepo.GetByIdAsync(id);
                 if (product == null)
                     return NotFound($"Product with ID {id} not found.");
 
@@ -66,25 +66,18 @@ namespace Watch_Ecommerce.Controllers
 
             try
             {
-                // Lookup CategoryId
-                var categories = await unitOfWork.CategoryRepository.GetAllAsync();
-                var category = categories.FirstOrDefault(c => c.Name.ToLower() == productDto.CategoryName.ToLower());
+                var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productDto.CategoryId);
+                var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productDto.ProductBrandId);
 
-                // Lookup BrandId
-                var brands = await unitOfWork.ProductBrandRepository.GetAllAsync();
-                var brand = brands.FirstOrDefault(b => b.Name.ToLower() == productDto.ProductBrandName.ToLower());
-
-                if (category == null || brand == null)
+                if (!categoryExists || !brandExists)
                 {
-                    return BadRequest("Invalid Category or Brand name.");
+                    return BadRequest("Invalid CategoryId or ProductBrandId.");
                 }
 
                 // Map DTO to Entity
                 var product = mapper.Map<Product>(productDto);
-                product.CategoryId = category.Id;
-                product.ProductBrandId = brand.Id;
-
-                await unitOfWork.ProductRepository.AddAsync(product);
+             
+                await unitOfWork.productrepo.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 
                 var productReadDTO = mapper.Map<DisplayProductDTO>(product);
@@ -104,25 +97,22 @@ namespace Watch_Ecommerce.Controllers
 
             try
             {
-                var existingProduct = await unitOfWork.ProductRepository.GetByIdAsync(id);
+                var existingProduct = await unitOfWork.productrepo.GetByIdAsync(id);
                 if (existingProduct == null)
                     return NotFound($"Product with ID {id} not found.");
 
-                // Lookup Category and Brand by name
-                var category = (await unitOfWork.CategoryRepository.GetAllAsync())
-                                    .FirstOrDefault(c => c.Name.ToLower() == productDto.CategoryName.ToLower());
-                var brand = (await unitOfWork.ProductBrandRepository.GetAllAsync())
-                                    .FirstOrDefault(b => b.Name.ToLower() == productDto.ProductBrandName.ToLower());
+                var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productDto.CategoryId);
+                var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productDto.ProductBrandId);
 
-                if (category == null || brand == null)
-                    return BadRequest("Invalid Category or Brand name.");
+                if (!categoryExists || !brandExists)
+                {
+                    return BadRequest("Invalid CategoryId or ProductBrandId.");
+                }
 
                 // Map updated values
                 mapper.Map(productDto, existingProduct);
-                existingProduct.CategoryId = category.Id;
-                existingProduct.ProductBrandId = brand.Id;
 
-                await unitOfWork.ProductRepository.UpdateAsync(existingProduct);
+                await unitOfWork.productrepo.UpdateAsync(existingProduct);
                 await unitOfWork.CompleteAsync();
 
                 var productReadDTO = mapper.Map<DisplayProductDTO>(existingProduct);
@@ -135,15 +125,14 @@ namespace Watch_Ecommerce.Controllers
             }
         }
 
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id) { 
             try
             {
-                var product = await unitOfWork.ProductRepository.GetByIdAsync(id);
+                var product = await unitOfWork.productrepo.GetByIdAsync(id);
                 if (product == null)
                     return NotFound($"Product with ID {id} not found.");
-                await unitOfWork.ProductRepository.DeleteAsync(id);
+                await unitOfWork.productrepo.DeleteAsync(id);
                 await unitOfWork.CompleteAsync();
                 return NoContent(); // 204 No Content
             }

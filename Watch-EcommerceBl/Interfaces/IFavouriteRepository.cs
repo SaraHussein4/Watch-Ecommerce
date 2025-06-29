@@ -10,6 +10,7 @@ namespace Watch_EcommerceBl.Interfaces
     public interface IFavouriteRepository:IGenericRepository<Favourite,int>
     {
         public  Task<Favourite> AddToFav(string userid, int productid);
+        public Task<bool> RemoveFromFav(string userid, int productid);
 
     }
 }

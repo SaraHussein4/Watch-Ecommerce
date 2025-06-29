@@ -45,7 +45,8 @@ namespace Watch_Ecommerce.Helpers
             #region fav
             CreateMap<Favourite, FavDto>().AfterMap((src, dst) =>
             {
-                
+                dst.ProductId = src.ProductId;
+
             }).ReverseMap();
             #endregion
         }

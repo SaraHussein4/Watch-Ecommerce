@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,24 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Error retrieving product: {ex.Message}");
             }
 
+        }
+        [HttpPost("cancel/{orderId}")]
+        public async Task<IActionResult> CanceldOrder(int orderid)
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("User not authenticated");
+                var orderCancel= await OrderService.CancelorderAsync(userId,orderid);
+                if(orderCancel == null)
+                    return BadRequest("Cannot cancel this order. It may have already been shipped or does not exist.");
+                return Ok("Order cancelled successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
         }
     }
 }

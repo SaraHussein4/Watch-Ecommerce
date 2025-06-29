@@ -60,7 +60,14 @@ namespace Watch_Ecommerce.Services
         {
             return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
         }
-
+        public async Task<bool> CancelorderAsync(string userid,int orderid)
+        {
+            var order= await _context.Orders.FirstOrDefaultAsync(o=>o.UserId==userid && o.Id==orderid);
+            if(order==null) return false;
+            order.Status = "Cancelled";
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
 
     }

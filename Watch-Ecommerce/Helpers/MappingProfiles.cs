@@ -4,6 +4,7 @@ using Watch_Ecommerce.DTOs.Fav;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
+using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
 using Watch_EcommerceDAL.Models;
@@ -62,6 +63,7 @@ namespace Watch_Ecommerce.Helpers
             #endregion
             #region order
             CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
+            CreateMap<Order,OrderDetailsDto>().ReverseMap();
             #endregion
         }
     }

@@ -42,6 +42,7 @@ namespace Watch_Ecommerce
                 };
 
             });
+            builder.Services.AddAuthorization();
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>
@@ -74,7 +75,6 @@ namespace Watch_Ecommerce
             #region UnitOfWork
             builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
-
             var app = builder.Build();
 
             var scope = app.Services.CreateScope();

@@ -9,6 +9,7 @@ namespace ECommerce.Core.model
 {
     public class Favourite
     {
+       
         public string UserId { get; set; }
         public int ProductId { get; set; }
 

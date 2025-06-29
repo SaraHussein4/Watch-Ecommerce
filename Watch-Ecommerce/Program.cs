@@ -81,13 +81,13 @@ namespace Watch_Ecommerce
                 };
 
             });
+            builder.Services.AddAuthorization();
 
             builder.Services.AddAuthorization();
 
             #region UnitOfWork
             builder.Services.AddScoped<IUnitOfWorks, UnitOfWork>();
             #endregion
-
             var app = builder.Build();
 
             var scope = app.Services.CreateScope();

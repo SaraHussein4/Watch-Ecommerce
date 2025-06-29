@@ -4,7 +4,7 @@ namespace Watch_Ecommerce.DTOs.Product
 {
     public class DisplayProductDTO : ProductReadDTO
     {
-        public string CategoryName { get; set; }
-        public string ProductBrandName { get; set; }
+        public int CategoryId { get; set; }
+        public int ProductBrandId { get; set; }
     }
 }

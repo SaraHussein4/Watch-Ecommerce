@@ -151,7 +151,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.OrderItem", b =>
@@ -626,7 +626,7 @@ namespace Watch_EcommerceDAL.Migrations
 
                             b1.HasIndex("GovernorateId");
 
-                            b1.ToTable("Order");
+                            b1.ToTable("Orders");
 
                             b1.HasOne("Watch_EcommerceDAL.Models.Governorate", "Governorate")
                                 .WithMany()

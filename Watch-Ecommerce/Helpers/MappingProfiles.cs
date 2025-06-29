@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
 using Watch_Ecommerce.DTOs.Fav;
+using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Helpers
 {
@@ -57,6 +59,9 @@ namespace Watch_Ecommerce.Helpers
                 dst.ProductId = src.ProductId;
 
             }).ReverseMap();
+            #endregion
+            #region order
+            CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
             #endregion
         }
     }

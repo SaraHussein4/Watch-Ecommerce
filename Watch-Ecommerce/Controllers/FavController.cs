@@ -20,8 +20,10 @@ namespace Watch_Ecommerce.Controllers
             this.mapper = mapper;
             this.UOW = UOW;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddProductToFavorite(FavDTO favDto)
+
+        [HttpPost("AddProductToFavorite")]
+        [Authorize]
+        public async Task<IActionResult> AddProductToFavorite(FavDto favDto)
         {
             if (favDto == null) return BadRequest();
             if (ModelState.IsValid)

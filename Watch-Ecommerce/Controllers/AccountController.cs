@@ -78,7 +78,7 @@ namespace Watch_Ecommerce.Controllers
 
 
         [HttpPost("Login")]
-
+        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);

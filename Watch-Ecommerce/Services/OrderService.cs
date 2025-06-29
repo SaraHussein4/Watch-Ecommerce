@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.model;
+using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceDAL.Models;
@@ -19,7 +20,10 @@ namespace Watch_Ecommerce.Services
             var basket = await _cartRepository.GetBasketAsync(userId);
             if (basket == null || !basket.Items.Any())
                 return null;
-
+          
+            var deliveryMethod = await _context.Deliverymethods.FindAsync(deliveryMethodId);
+            if (deliveryMethod == null)
+                return null;
             var order = new Order
             {
                 UserId = userId,
@@ -53,7 +57,19 @@ namespace Watch_Ecommerce.Services
 
             return order;
         }
-
+      
+        public async Task<Order> GetOrderByIdAsynce(int id)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
+        }
+        public async Task<bool> CancelorderAsync(string userid,int orderid)
+        {
+            var order= await _context.Orders.FirstOrDefaultAsync(o=>o.UserId==userid && o.Id==orderid);
+            if(order==null) return false;
+            order.Status = "Cancelled";
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
 
 

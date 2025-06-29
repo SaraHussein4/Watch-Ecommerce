@@ -29,9 +29,7 @@ namespace Watch_Ecommerce.Controllers
         {
             try
             {
-                var products = await unitOfWork.productrepo.GetAllAsync();
-
-                // Map to DTOs
+                var products = await unitOfWork.productrepo.GetAllWithPrimaryImageAsync(); // Include images
                 var productDTOs = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
                 return Ok(productDTOs);
             }
@@ -40,16 +38,17 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Error retrieving products: {ex.Message}");
             }
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
             try
             {
-                var product = await unitOfWork.productrepo.GetByIdAsync(id);
+                var product = await unitOfWork.productrepo.GetByIdWithImagesAsync(id); // ← Include Images
                 if (product == null)
                     return NotFound($"Product with ID {id} not found.");
 
-                var productDTO = mapper.Map<DisplayProductDTO>(product); 
+                var productDTO = mapper.Map<DisplayProductDTO>(product);
                 return Ok(productDTO);
             }
             catch (Exception ex)
@@ -57,7 +56,8 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Error retrieving product: {ex.Message}");
             }
         }
-        
+
+
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] AddProductDTO productDto)
         {
@@ -68,15 +68,16 @@ namespace Watch_Ecommerce.Controllers
             {
                 var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productDto.CategoryId);
                 var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productDto.ProductBrandId);
-
                 if (!categoryExists || !brandExists)
-                {
                     return BadRequest("Invalid CategoryId or ProductBrandId.");
+
+                var product = mapper.Map<Product>(productDto);
+
+                if (productDto.Images != null && productDto.Images.Any())
+                {
+                    product.Images = mapper.Map<List<Image>>(productDto.Images);
                 }
 
-                // Map DTO to Entity
-                var product = mapper.Map<Product>(productDto);
-             
                 await unitOfWork.productrepo.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 
@@ -89,6 +90,7 @@ namespace Watch_Ecommerce.Controllers
             }
         }
 
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDTO productDto)
         {
@@ -97,20 +99,21 @@ namespace Watch_Ecommerce.Controllers
 
             try
             {
-                var existingProduct = await unitOfWork.productrepo.GetByIdAsync(id);
+                var existingProduct = await unitOfWork.productrepo.GetByIdWithImagesAsync(id);
                 if (existingProduct == null)
                     return NotFound($"Product with ID {id} not found.");
 
                 var categoryExists = await unitOfWork.CategoryRepository.ExistsAsync(productDto.CategoryId);
                 var brandExists = await unitOfWork.ProductBrandRepository.ExistsAsync(productDto.ProductBrandId);
-
                 if (!categoryExists || !brandExists)
-                {
                     return BadRequest("Invalid CategoryId or ProductBrandId.");
-                }
 
-                // Map updated values
                 mapper.Map(productDto, existingProduct);
+
+                if (productDto.Images != null)
+                {
+                    existingProduct.Images = mapper.Map<List<Image>>(productDto.Images); // Replace or merge images
+                }
 
                 await unitOfWork.productrepo.UpdateAsync(existingProduct);
                 await unitOfWork.CompleteAsync();
@@ -120,10 +123,10 @@ namespace Watch_Ecommerce.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error creating product: {ex.InnerException?.Message ?? ex.Message}");
-
+                return StatusCode(500, $"Error updating product: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id) { 

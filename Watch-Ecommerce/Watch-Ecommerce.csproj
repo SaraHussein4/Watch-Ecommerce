@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOS\OrderDTOS\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

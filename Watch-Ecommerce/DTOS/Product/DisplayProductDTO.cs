@@ -6,5 +6,6 @@ namespace Watch_Ecommerce.DTOs.Product
     {
         public int CategoryId { get; set; }
         public int ProductBrandId { get; set; }
+        public List<ImageDTO> Images { get; set; } = new List<ImageDTO>();
     }
 }

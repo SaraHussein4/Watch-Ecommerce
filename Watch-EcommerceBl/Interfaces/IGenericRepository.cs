@@ -13,6 +13,7 @@ namespace Watch_EcommerceBl.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         public Task<Tuple<IEnumerable<TEntity>, int>> GetPageAsync(int page, int pageSize);
         Task AddAsync(TEntity entity);
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TKey id);
         Task<bool> ExistsAsync(TKey id);

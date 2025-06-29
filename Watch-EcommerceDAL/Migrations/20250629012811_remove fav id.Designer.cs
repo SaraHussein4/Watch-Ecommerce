@@ -4,6 +4,7 @@ using ECommerce.Core.model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Watch_EcommerceDAL.Migrations
 {
     [DbContext(typeof(TikrContext))]
-    partial class TikrContextModelSnapshot : ModelSnapshot
+    [Migration("20250629012811_remove fav id")]
+    partial class removefavid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,9 +136,6 @@ namespace Watch_EcommerceDAL.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("DATETIME2");
 
-                    b.Property<int>("DeliveryMethodId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -146,8 +146,6 @@ namespace Watch_EcommerceDAL.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeliveryMethodId");
 
                     b.HasIndex("UserId");
 
@@ -469,80 +467,6 @@ namespace Watch_EcommerceDAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Watch_EcommerceDAL.Models.Deliverymethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("DeliveryTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShortName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Deliverymethods");
-                });
-
-            modelBuilder.Entity("Watch_EcommerceDAL.Models.Governorate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("DeliveryCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Governorates");
-                });
-
-            modelBuilder.Entity("Watch_EcommerceDAL.Models.GovernorateDeliveryMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("DeliveryCost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("DeliveryMethodId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GovernorateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryMethodId");
-
-                    b.HasIndex("GovernorateId");
-
-                    b.ToTable("GovernorateDeliveryMethods");
-                });
-
             modelBuilder.Entity("ECommerce.Core.model.Address", b =>
                 {
                     b.HasOne("ECommerce.Core.model.User", "User")
@@ -586,63 +510,10 @@ namespace Watch_EcommerceDAL.Migrations
 
             modelBuilder.Entity("ECommerce.Core.model.Order", b =>
                 {
-                    b.HasOne("Watch_EcommerceDAL.Models.Deliverymethod", "Deliverymethod")
-                        .WithMany()
-                        .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("ECommerce.Core.model.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.OwnsOne("Watch_EcommerceDAL.Models.OrderAddress", "OrderAddress", b1 =>
-                        {
-                            b1.Property<int>("OrderId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("FirstName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<int>("GovernorateId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("LastName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("OrderId");
-
-                            b1.HasIndex("GovernorateId");
-
-                            b1.ToTable("Order");
-
-                            b1.HasOne("Watch_EcommerceDAL.Models.Governorate", "Governorate")
-                                .WithMany()
-                                .HasForeignKey("GovernorateId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderId");
-
-                            b1.Navigation("Governorate");
-                        });
-
-                    b.Navigation("Deliverymethod");
-
-                    b.Navigation("OrderAddress")
                         .IsRequired();
 
                     b.Navigation("User");
@@ -735,25 +606,6 @@ namespace Watch_EcommerceDAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Watch_EcommerceDAL.Models.GovernorateDeliveryMethod", b =>
-                {
-                    b.HasOne("Watch_EcommerceDAL.Models.Deliverymethod", "DeliveryMethod")
-                        .WithMany()
-                        .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Watch_EcommerceDAL.Models.Governorate", "Governorate")
-                        .WithMany()
-                        .HasForeignKey("GovernorateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DeliveryMethod");
-
-                    b.Navigation("Governorate");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Category", b =>

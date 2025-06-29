@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Watch_Ecommerce.DTOs.Fav;
+using Watch_Ecommerce.DTOS;
 using Watch_EcommerceBl.Interfaces;
 
 namespace Watch_Ecommerce.Controllers
@@ -22,7 +21,7 @@ namespace Watch_Ecommerce.Controllers
             this.UOW = UOW;
         }
         [HttpPost]
-        public async Task<IActionResult> AddProductToFavorite(FavDto favDto)
+        public async Task<IActionResult> AddProductToFavorite(FavDTO favDto)
         {
             if (favDto == null) return BadRequest();
             if (ModelState.IsValid)
@@ -45,7 +44,7 @@ namespace Watch_Ecommerce.Controllers
 
                 await UOW.CompleteAsync();
 
-                var myFavDto = mapper.Map<FavDto>(myFav);
+                var myFavDto = mapper.Map<FavDTO>(myFav);
                 return Ok(myFavDto);
             }
             return BadRequest(ModelState);

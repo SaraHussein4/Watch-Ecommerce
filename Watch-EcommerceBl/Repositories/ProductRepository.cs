@@ -22,9 +22,9 @@ namespace Watch_EcommerceBl.Repositories
             return await context.Products.FirstOrDefaultAsync(f => f.Name == name);
 
         }
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product> GetProductByIdAsync(int pid)
         {
-            return await _context.Products.FindAsync(id);
+            return await context.Products.FirstOrDefaultAsync(f=>f.Id==pid);
         }
     }
 

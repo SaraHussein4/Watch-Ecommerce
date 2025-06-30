@@ -3,6 +3,7 @@ using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Product;
@@ -21,12 +22,14 @@ namespace Watch_Ecommerce.Controllers
         private readonly IUnitOfWorks unitOfWork;
         private readonly IMapper mapper;
         private readonly IImageManagementService _imageManagementService;
+        private readonly TikrContext _context;
 
-        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper, IImageManagementService imageManagementService)
+        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper, IImageManagementService imageManagementService, TikrContext context)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             _imageManagementService = imageManagementService;
+            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
@@ -41,6 +44,55 @@ namespace Watch_Ecommerce.Controllers
             {
                 return StatusCode(500, $"Error retrieving products: {ex.Message}");
             }
+        }
+
+
+        [HttpPost("FilterProduct")]
+        public async Task<ActionResult<DisplayProductDTO>> GetFilteredProducts(ProductFilterDTO productFilterDTO)
+        {
+            var query = _context.Products.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(productFilterDTO.SearchTerm))
+            {
+                query = query.Where(p => p.Name.Contains(productFilterDTO.SearchTerm));
+            }
+
+            if (productFilterDTO.CategoryIds != null && productFilterDTO.CategoryIds.Any())
+            {
+                query = query.Where(p => productFilterDTO.CategoryIds.Contains(p.CategoryId));
+            }
+
+            if (productFilterDTO.BrandIds != null && productFilterDTO.BrandIds.Any())
+            {
+                query = query.Where(p => productFilterDTO.BrandIds.Contains(p.ProductBrandId));
+            }
+
+            if (productFilterDTO.Genders != null && productFilterDTO.Genders.Any())
+            {
+                query = query.Where(p => productFilterDTO.Genders.Contains(p.GenderCategory));
+            }
+
+            // Apply sorting
+            query = productFilterDTO.SortBy switch
+            {
+                "priceLowToHigh" => query.OrderBy(p => p.Price),
+                "priceHighToLow" => query.OrderByDescending(p => p.Price),
+                _ => query.OrderByDescending(p => p.Id) // newest first
+            };
+
+            // Get total count before pagination
+            var totalCount = await query.CountAsync();
+
+            // Apply pagination
+            var items = await query
+                .Skip((productFilterDTO.Page - 1) * productFilterDTO.PageSize)
+                .Take(productFilterDTO.PageSize)
+                .ToListAsync();
+
+
+            var DisplayProductDTO = mapper.Map<List<DisplayProductDTO>>(items);
+            return Ok(DisplayProductDTO);
         }
 
         [HttpGet("{id}")]

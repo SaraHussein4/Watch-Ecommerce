@@ -14,5 +14,8 @@ namespace Watch_EcommerceBl.Interfaces
         //Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO);
         Task<Product?> GetByIdWithImagesAsync(int id);
 
+        Task<IEnumerable<Product>> GetOneProductPerBrandAsync();
+
+
     }
 }

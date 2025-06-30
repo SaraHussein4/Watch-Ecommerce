@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Watch_Ecommerce.DTOs.Fav;
+using Watch_Ecommerce.DTOS;
 using Watch_EcommerceBl.Interfaces;
 
 namespace Watch_Ecommerce.Controllers
@@ -21,26 +20,53 @@ namespace Watch_Ecommerce.Controllers
             this.mapper = mapper;
             this.UOW = UOW;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddProductToFavorite(FavDto favDto)
+
+        [HttpPost("AddProductToFavorite")]
+        [Authorize]
+        public async Task<IActionResult> AddProductToFavorite(FavDTO favDto)
         {
             if (favDto == null) return BadRequest();
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            
+            if (ModelState.IsValid)
+            {
                 var userclaims = User.FindFirst(ClaimTypes.NameIdentifier);
                 if (userclaims == null)
                     return Unauthorized("User not authenticated");
+
                 string userId = userclaims.Value;
+
                 var prod = await UOW.productrepo.GetProductByIdAsync(favDto.ProductId);
-                if(prod == null) return NotFound("Product not found");
+                if (prod == null) return NotFound("Product not found");
+
                 int productId = prod.Id;
-               var myFav= await UOW.FavoriteRepo.AddToFav(userId, productId);
-                if (myFav == null) return BadRequest("Failed to add item to Favourite.");
+
+                Favourite myFav = await UOW.FavoriteRepo.AddToFav(userId, productId);
+
+                if (myFav == null)
+                    return BadRequest("Product is already in your Favourite list.");
+
                 await UOW.CompleteAsync();
-                var myFavDto=mapper.Map<FavDto>(myFav);
+
+                var myFavDto = mapper.Map<FavDTO>(myFav);
                 return Ok(myFavDto);
-            
-            //return BadRequest(ModelState);
+            }
+            return BadRequest(ModelState);
         }
+        [HttpDelete("{prodid}")]
+        public async Task<IActionResult> RemoveFromFavourite(int prodid)
+        {
+
+            var userclaims = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userclaims == null)
+                return Unauthorized("User not authenticated");
+            string userId = userclaims.Value;
+            var prod = await UOW.productrepo.GetProductByIdAsync(prodid);
+            if (prod == null) return NotFound("Product not found");
+            int productId = prod.Id;
+            var favRemoved = await UOW.FavoriteRepo.RemoveFromFav(userId, productId);
+            if (!favRemoved) return NotFound("Item not found in favorites");
+            await UOW.CompleteAsync();
+            return Ok("Item removed successfully");
+        }
+
     }
 }

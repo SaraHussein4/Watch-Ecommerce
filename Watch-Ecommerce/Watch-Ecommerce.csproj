@@ -8,9 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="DTOS\OrderDTOS\**" />
 	  <Compile Remove="MappingProfiles\**" />
+	  <Content Remove="DTOS\OrderDTOS\**" />
 	  <Content Remove="MappingProfiles\**" />
+	  <EmbeddedResource Remove="DTOS\OrderDTOS\**" />
 	  <EmbeddedResource Remove="MappingProfiles\**" />
+	  <None Remove="DTOS\OrderDTOS\**" />
 	  <None Remove="MappingProfiles\**" />
 	</ItemGroup>
 
@@ -23,6 +27,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.6" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
 	</ItemGroup>
@@ -31,9 +37,9 @@
     <ProjectReference Include="..\Watch-EcommerceBl\Watch-EcommerceBl.csproj" />  
   </ItemGroup>
   <ItemGroup>
-
-
     <Folder Include="wwwroot\" />
+    <Folder Include="DTOS\OrderDTOS\" />
+    <Folder Include="wwwroot\Images" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Enumerators;
+using Watch_Ecommerce.DTOS.Product;
 
 namespace Watch_Ecommerce.DTOs.Product
 {
@@ -16,5 +17,6 @@ namespace Watch_Ecommerce.DTOs.Product
         public List<string> Sizes { get; set; }
         public int CategoryId { get; set; }
         public int ProductBrandId { get; set; }
+        public List<ImageDTO> Images { get; set; } = new List<ImageDTO>();
     }
 }

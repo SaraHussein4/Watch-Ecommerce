@@ -22,10 +22,26 @@ namespace Watch_EcommerceBl.Repositories
             return await context.Products.FirstOrDefaultAsync(f => f.Name == name);
 
         }
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product> GetProductByIdAsync(int pid)
         {
-            return await _context.Products.FindAsync(id);
+            return await context.Products.FirstOrDefaultAsync(f=>f.Id==pid);
         }
+        // For GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllWithPrimaryImageAsync()
+        {
+            return await _context.Products
+                                 .Include(p => p.Images.Where(img => img.isPrimary))
+                                 .ToListAsync();
+        }
+
+        // For GetProductById()
+        public async Task<Product?> GetByIdWithImagesAsync(int id)
+        {
+            return await _context.Products
+                                 .Include(p => p.Images)
+                                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
     }
 
 }

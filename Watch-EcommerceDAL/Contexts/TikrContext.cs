@@ -5,8 +5,10 @@ using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Watch_EcommerceDAL.Models;
 
 namespace ECommerce.Core.model
 {
@@ -76,6 +78,29 @@ namespace ECommerce.Core.model
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Order>(builder =>
+            {
+                builder.Property(o => o.Status).HasConversion<string>();
+
+                
+                builder.OwnsOne(o => o.OrderAddress, oa =>
+                {
+                    oa.WithOwner();
+
+                    oa.Property(a => a.FirstName).IsRequired();
+                    oa.Property(a => a.LastName).IsRequired();
+                    oa.Property(a => a.City).IsRequired();
+                    oa.Property(a => a.Street).IsRequired();
+                    oa.Property(a => a.GovernorateId).IsRequired();
+                });
+
+                builder.HasOne(o => o.Deliverymethod)
+                       .WithMany()
+                       .HasForeignKey(o => o.DeliveryMethodId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+                builder.Property(o => o.Amount).HasColumnType("decimal(18,2)");
+            });
             #endregion
 
             #region OrderItem
@@ -141,6 +166,12 @@ namespace ECommerce.Core.model
         public DbSet<OrderItem> OrderItems{ get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands{ get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
+
+        public  DbSet<Deliverymethod> Deliverymethods { get; set; }
+        public DbSet<GovernorateDeliveryMethod> GovernorateDeliveryMethods { get; set; }
 
     }
 }

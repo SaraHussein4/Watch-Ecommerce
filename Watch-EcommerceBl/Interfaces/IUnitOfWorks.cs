@@ -11,6 +11,7 @@ namespace Watch_EcommerceBl.Interfaces
     {
         IGenericRepository<Category, int> CategoryRepository {  get; }
         IGenericRepository<ProductBrand, int> ProductBrandRepository {  get; }
+        IGenericRepository<Image, int> ImageRepository { get; }
         public IProductRepository productrepo
         {
             get;

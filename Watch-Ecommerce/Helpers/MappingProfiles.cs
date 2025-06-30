@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
-using Watch_Ecommerce.DTOs.Fav;
+using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
+using Watch_Ecommerce.DTOS;
 using Watch_Ecommerce.DTOS.Category;
+using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Helpers
 {
@@ -37,17 +40,34 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<Product, ProductReadDTO>().ReverseMap();
 
             CreateMap<Product, DisplayProductDTO>().ReverseMap();
-            CreateMap<AddProductDTO, Product>().ReverseMap();
-            CreateMap<Product, UpdateProductDTO>().ReverseMap();
 
+            CreateMap<AddProductDTO, Product>().ReverseMap();
+            
+            CreateMap<Product, UpdateProductDTO>().ReverseMap();
+            
+            CreateMap<Image, ImageDTO>().ReverseMap();
+
+
+            CreateMap<ProductCreateDTO, Product>()
+                .ForMember(src => src.Images, 
+                            opt => opt.Ignore())
+                .ReverseMap();
             #endregion
 
             #region fav
-            CreateMap<Favourite, FavDto>().AfterMap((src, dst) =>
+            CreateMap<Favourite, FavDTO>().AfterMap((src, dst) =>
             {
                 dst.ProductId = src.ProductId;
-                //dst.ProductName=src.Product !=null? src.Product.Name:null;
+
             }).ReverseMap();
+            #endregion
+            #region order
+            CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
+            CreateMap<Order,OrderDetailsDto>().ReverseMap();
+            CreateMap<Order, OrderDto>();
+            CreateMap<OrderItem, OrderItemDto>();
+            CreateMap<OrderAddress, OrderAddressDto>();
+            CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
         }
     }

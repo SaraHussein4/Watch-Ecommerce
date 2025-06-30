@@ -3,7 +3,7 @@ using ECommerce.Core.model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Watch_Ecommerce.DTOS;
+using Watch_Ecommerce.DTOS.Fav;
 using Watch_EcommerceBl.Interfaces;
 
 namespace Watch_Ecommerce.Controllers

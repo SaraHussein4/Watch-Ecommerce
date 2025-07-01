@@ -8,7 +8,7 @@ using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
 using Watch_EcommerceDAL.Models;
-
+using Watch_Ecommerce.DTOS;
 namespace Watch_Ecommerce.Helpers
 {
     public class MappingProfiles : Profile
@@ -69,6 +69,7 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<OrderAddress, OrderAddressDto>();
             CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
+           
         }
     }
 }

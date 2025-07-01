@@ -36,18 +36,6 @@ namespace Watch_Ecommerce.Controllers
                 return Basket;
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasket basket)
-        //{
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized("User not authenticated");
-
-        //    basket.Id = userId;
-        //    var CreatedOrUpdatedBasket = await CartRepository.UpdateBasketAsync(basket);
-        //    if (CreatedOrUpdatedBasket is null) return BadRequest();
-        //    return Ok(CreatedOrUpdatedBasket);
-        //}
         [HttpPost]
 
         public async Task<ActionResult<CustomerBasket>> UpdateBasket( List<CartItem> items)
@@ -73,6 +61,18 @@ namespace Watch_Ecommerce.Controllers
         public async Task<ActionResult<bool>> DeleteBasket(string id)
         {
             return await CartRepository.DeleteBasketAsync(id);
+        }
+
+        [HttpDelete("item/{productId}")]
+        public async Task<ActionResult<CustomerBasket>> RemoveItemFromBasket(int productId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var updatedBasket = await CartRepository.RemoveItemFromBasketAsync(userId, productId);
+            if (updatedBasket == null) return NotFound("Basket not found or item does not exist");
+
+            return Ok(updatedBasket);
         }
 
     }

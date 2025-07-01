@@ -48,6 +48,32 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForCurrentUser(int orderId)
+        {
+            try
+            {
+                var userClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userClaims == null)
+                    return Unauthorized("User not authenticated");
+
+                string userId = userClaims.Value;
+
+                var order = await OrderService.GetOrderByIdForUserAsync(userId, orderId);
+                if (order == null)
+                    return NotFound("Order not found or does not belong to this user.");
+
+                var orderDto = mapper.Map<OrderDto>(order);
+                return Ok(orderDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetOrderByID(int id)
         {

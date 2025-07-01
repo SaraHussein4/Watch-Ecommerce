@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Services
@@ -15,22 +16,71 @@ namespace Watch_Ecommerce.Services
             _cartRepository = cartRepository;
             _context = tikrContext;
         }
+        //public async Task<Order?> CreateOrderAsync(string userId, int deliveryMethodId, OrderAddressDto dto)
+        //{
+        //    var basket = await _cartRepository.GetBasketAsync(userId);
+        //    if (basket == null || !basket.Items.Any())
+        //        return null;
+
+        //    var deliveryMethod = await _context.Deliverymethods.FindAsync(deliveryMethodId);
+        //    if (deliveryMethod == null)
+        //        return null;
+        //    var order = new Order
+        //    {
+        //        UserId = userId,
+        //        DeliveryMethodId = deliveryMethodId,
+        //        Status = "Pending",
+        //        Date = DateTime.Now,
+        //        Amount = basket.Items.Sum(i => i.Price * i.Quantity),
+
+        //        OrderAddress = new OrderAddress
+        //        {
+        //            FirstName = dto.FirstName,
+        //            LastName = dto.LastName,
+        //            City = dto.City,
+        //            Street = dto.Street,
+        //            GovernorateId = dto.GovernorateId
+        //        },
+
+        //        OrderItems = basket.Items.Select(i => new OrderItem
+        //        {
+        //            ProductId = i.id,
+        //            Quantity = i.Quantity,
+        //            Price = i.Price,
+        //            Amount = (int)(i.Price * i.Quantity)
+        //        }).ToList(),
+        //        SubTotal =
+        //    };
+
+        //    _context.Orders.Add(order);
+        //    await _context.SaveChangesAsync();
+
+        //    await _cartRepository.DeleteBasketAsync(userId);
+
+        //    return order;
+        //}
+
+
         public async Task<Order?> CreateOrderAsync(string userId, int deliveryMethodId, OrderAddressDto dto)
         {
             var basket = await _cartRepository.GetBasketAsync(userId);
             if (basket == null || !basket.Items.Any())
                 return null;
-          
+
             var deliveryMethod = await _context.Deliverymethods.FindAsync(deliveryMethodId);
             if (deliveryMethod == null)
                 return null;
+
+            var subTotal = basket.Items.Sum(i => i.Price * i.Quantity);
+
             var order = new Order
             {
                 UserId = userId,
                 DeliveryMethodId = deliveryMethodId,
                 Status = "Pending",
                 Date = DateTime.Now,
-                Amount = basket.Items.Sum(i => i.Price * i.Quantity),
+                SubTotal = subTotal,
+                Amount = subTotal + deliveryMethod.Cost, // Or use GetTotal() after object is fully initialized
 
                 OrderAddress = new OrderAddress
                 {
@@ -57,10 +107,18 @@ namespace Watch_Ecommerce.Services
 
             return order;
         }
-      
+
+
         public async Task<Order> GetOrderByIdAsynce(int id)
         {
             return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
+        }
+
+
+        public async Task<Order?> GetOrderByIdForUserAsync(string userId, int orderId)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
         }
         public async Task<bool> CancelorderAsync(string userid,int orderid)
         {

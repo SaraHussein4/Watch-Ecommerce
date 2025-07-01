@@ -4,6 +4,7 @@ using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Fav;
+using Watch_Ecommerce.DTOS.ImageDTO;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
@@ -68,6 +69,9 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<OrderItem, OrderItemDto>();
             CreateMap<OrderAddress, OrderAddressDto>();
             CreateMap<Deliverymethod, DeliverymethodDto>();
+            #endregion
+            #region image
+            CreateMap<Image,AddImgDto>().ReverseMap();
             #endregion
         }
     }

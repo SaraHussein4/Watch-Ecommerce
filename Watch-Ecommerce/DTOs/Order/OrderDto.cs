@@ -5,6 +5,8 @@
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public string Status { get; set; }
+
+        public decimal SubTotal { get; set; }
         public decimal Amount { get; set; }
         public OrderAddressDto OrderAddress { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }

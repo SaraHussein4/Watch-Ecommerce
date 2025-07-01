@@ -47,7 +47,6 @@ namespace Watch_Ecommerce.Controllers
             }
         }
 
-
         [HttpPost("FilterProduct")]
         public async Task<ActionResult<DisplayProductDTO>> GetFilteredProducts(ProductFilterDTO productFilterDTO)
         {
@@ -96,7 +95,43 @@ namespace Watch_Ecommerce.Controllers
             return Ok(DisplayProductDTO);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("best-sellers")]
+        public async Task<IActionResult> GetTopBestSellers()
+        {
+            try
+            {
+                var topProducts = await _context.Products
+                    .Include(p => p.Images.Where(i => i.isPrimary))
+                    .OrderByDescending(p => p.Id) // Or any other logic (sales count)
+                    .Take(8)
+                    .ToListAsync();
+
+                var result = mapper.Map<IEnumerable<DisplayProductDTO>>(topProducts);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching best sellers: {ex.Message}");
+            }
+        }
+
+        [HttpGet("brand-featured")]
+        public async Task<IActionResult> GetOneProductPerBrand()    
+        {
+            try
+            {
+                var products = await unitOfWork.productrepo.GetOneProductPerBrandAsync();
+                var productDTOs = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
+                return Ok(productDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving featured brand products: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
             try

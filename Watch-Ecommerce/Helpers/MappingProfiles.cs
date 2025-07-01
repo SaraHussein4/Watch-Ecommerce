@@ -4,6 +4,7 @@ using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Fav;
+using Watch_Ecommerce.DTOS.ImageDTO;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
@@ -25,11 +26,15 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<CategoryUpdateDTO, Category>()
                 .ReverseMap();
             #endregion
+
             #region ProductBrand
             CreateMap<ProductBrandCreateDTO, ProductBrand>()
                 .ReverseMap();
 
             CreateMap<ProductBrand, ProductBrandReadDTO>()
+                .ReverseMap();
+
+            CreateMap<ProductBrand, ProductBrandWithoutProductsCollectioDTO >()
                 .ReverseMap();
 
             CreateMap<ProductBrandUpdateDTO, ProductBrand>()
@@ -39,7 +44,9 @@ namespace Watch_Ecommerce.Helpers
             #region Product
             CreateMap<Product, ProductReadDTO>().ReverseMap();
 
-            CreateMap<Product, DisplayProductDTO>().ReverseMap();
+            CreateMap<Product, DisplayProductDTO>()
+            .ForMember(dest => dest.ProductBrand, 
+                       opt => opt.MapFrom(src => src.ProductBrand));
 
             CreateMap<AddProductDTO, Product>().ReverseMap();
             
@@ -61,6 +68,7 @@ namespace Watch_Ecommerce.Helpers
 
             }).ReverseMap();
             #endregion
+
             #region order
             CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
             CreateMap<Order,OrderDetailsDto>().ReverseMap();
@@ -69,7 +77,9 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<OrderAddress, OrderAddressDto>();
             CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
-           
+            #region image
+            CreateMap<Image,AddImgDto>().ReverseMap();
+            #endregion
         }
     }
 }

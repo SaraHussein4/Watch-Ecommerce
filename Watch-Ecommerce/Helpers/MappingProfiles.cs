@@ -5,6 +5,7 @@ using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Color;
 using Watch_Ecommerce.DTOS.Fav;
+using Watch_Ecommerce.DTOS.ImageDTO;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
@@ -108,6 +109,9 @@ namespace Watch_Ecommerce.Helpers
             //    .ReverseMap();
 
             //#endregion
+            #region image
+            CreateMap<Image,AddImgDto>().ReverseMap();
+            #endregion
         }
     }
 }

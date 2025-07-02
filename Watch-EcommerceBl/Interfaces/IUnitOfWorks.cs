@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_EcommerceBl.Interfaces
 {
@@ -12,6 +13,9 @@ namespace Watch_EcommerceBl.Interfaces
         IGenericRepository<Category, int> CategoryRepository {  get; }
         IGenericRepository<ProductBrand, int> ProductBrandRepository {  get; }
         IGenericRepository<Image, int> ImageRepository { get; }
+        //IGenericRepository<ProductColor, int> ProductColorRepository { get; }
+        //IGenericRepository<ProductSize, int> ProductSizeRepository { get; }
+
         public IProductRepository productrepo
         {
             get;

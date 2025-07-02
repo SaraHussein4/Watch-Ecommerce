@@ -10,6 +10,7 @@ using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.UnitOfWorks;
+using Watch_EcommerceDAL.Models;
 
 
 namespace Watch_Ecommerce.Controllers
@@ -168,6 +169,35 @@ namespace Watch_Ecommerce.Controllers
                 await unitOfWork.CompleteAsync();
 
 
+
+                //if(productCreateDTO.Colors != null && productCreateDTO.Colors.Any())
+                //{
+                //    var colors = productCreateDTO.Colors.Split(",").Select(c => int.Parse(c));
+                //    foreach(var color in colors)
+                //    {
+                //        await unitOfWork.ProductColorRepository.AddAsync(new ProductColor
+                //        {
+                //            ProductId = product.Id,
+                //            ColorId = color
+                //        });
+                //    }
+                //}
+
+                //if (productCreateDTO.Sizes != null && productCreateDTO.Sizes.Any())
+                //{
+                //    var sizes = productCreateDTO.Sizes.Split(",").Select(s => int.Parse(s));
+
+                //    foreach (var size in sizes)
+                //    {
+                //        await unitOfWork.ProductSizeRepository.AddAsync(new ProductSize
+                //        {
+                //            ProductId = product.Id,
+                //            SizeId = size
+                //        });
+                //    }
+                //}
+
+
                 if (productCreateDTO.Images != null && productCreateDTO.Images.Any())
                 {
                     List<string> ImagePath = await _imageManagementService.AddImageAsync(productCreateDTO.Images, productCreateDTO.Name);
@@ -197,7 +227,6 @@ namespace Watch_Ecommerce.Controllers
                     await unitOfWork.ImageRepository.AddRangeAsync(Images);
                     await unitOfWork.CompleteAsync();
  
-                   //product.Images = mapper.Map<List<Image>>(productDto.Images);
                 }
 
 

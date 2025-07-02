@@ -157,6 +157,47 @@ namespace ECommerce.Core.model
             builder.Entity<User>().Property(u => u.Name).HasMaxLength(100);
             #endregion
 
+
+            //#region Color
+            //builder.Entity<Color>().HasKey(a => a.Id);
+            //builder.Entity<Color>().Property(a => a.Name).HasMaxLength(100);
+            //#endregion
+
+            //#region Size
+            //builder.Entity<Size>().HasKey(a => a.Id);
+            //builder.Entity<Size>().Property(a => a.Name).HasMaxLength(100);
+            //#endregion
+
+
+            //#region ProductColor
+            //builder.Entity<ProductColor>().HasKey(pc => new { pc.ProductId, pc.ColorId});
+            //builder.Entity<ProductColor>()
+            //    .HasOne(pc => pc.Product)
+            //    .WithMany(p => p.Colors)
+            //    .HasForeignKey(pc => pc.ProductId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //builder.Entity<ProductColor>()
+            //    .HasOne(pc => pc.Color)
+            //    .WithMany(c => c.Products)
+            //    .HasForeignKey(pc => pc.ColorId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+            //#endregion
+
+            //#region ProductSize
+            //builder.Entity<ProductSize>().HasKey(ps => new { ps.ProductId, ps.SizeId });
+            //builder.Entity<ProductSize>()
+            //    .HasOne(ps => ps.Product)
+            //    .WithMany(p => p.Sizes)
+            //    .HasForeignKey(ps => ps.ProductId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+
+            //builder.Entity<ProductSize>()
+            //    .HasOne(ps => ps.Size)
+            //    .WithMany(s => s.Products)
+            //    .HasForeignKey(ps => ps.SizeId)
+            //    .OnDelete(DeleteBehavior.NoAction);
+            //#endregion
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -172,6 +213,12 @@ namespace ECommerce.Core.model
 
         public  DbSet<Deliverymethod> Deliverymethods { get; set; }
         public DbSet<GovernorateDeliveryMethod> GovernorateDeliveryMethods { get; set; }
+
+        //public DbSet<Color> Colors { get; set; }
+        //public DbSet<Size> Sizes { get; set; }
+        //public DbSet<ProductColor> ProductColors { get; set; }
+        //public DbSet<ProductSize> productSizes { get; set; }
+
 
     }
 }

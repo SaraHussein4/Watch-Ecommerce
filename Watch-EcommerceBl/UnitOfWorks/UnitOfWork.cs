@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.Repositories;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_EcommerceBl.UnitOfWorks
 {
@@ -18,6 +19,10 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
         public IGenericRepository<Image, int> imageRepository;
+        //public IGenericRepository<ProductColor, int> productColorRepository;
+        //public IGenericRepository<ProductSize, int> productSizeRepository;
+
+
 
         IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
@@ -63,6 +68,31 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return imageRepository;
             }
         }
+
+
+        //public IGenericRepository<ProductColor, int> ProductColorRepository
+        //{
+        //    get
+        //    {
+        //        if (productColorRepository == null)
+        //        {
+        //            productColorRepository = new GenericRepository<ProductColor, int>(_context);
+        //        }
+        //        return productColorRepository;
+        //    }
+        //}
+
+        //public IGenericRepository<ProductSize, int> ProductSizeRepository
+        //{
+        //    get
+        //    {
+        //        if (productSizeRepository == null)
+        //        {
+        //            productSizeRepository = new GenericRepository<ProductSize, int>(_context);
+        //        }
+        //        return productSizeRepository;
+        //    }
+        //}
         public IGenericRepository<Product, int> ProductRepository
         {
             get

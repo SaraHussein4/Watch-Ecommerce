@@ -1,4 +1,6 @@
 ﻿using ECommerce.Core.Enumerators;
+using Watch_Ecommerce.DTOS.Color;
+using Watch_Ecommerce.DTOS.Size;
 
 namespace Watch_Ecommerce.DTOS.Product
 {

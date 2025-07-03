@@ -84,6 +84,12 @@ namespace Watch_Ecommerce.Services
             return entry?.DeliveryCost;
         }
 
+        public async Task<Order?> GetOrderByIdForUserAsync(string userId, int orderId)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
+        }
+
 
 
     }

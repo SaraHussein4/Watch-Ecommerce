@@ -85,6 +85,19 @@ namespace Watch_Ecommerce.Helpers
                 dst.ProductId = src.ProductId;
 
             }).ReverseMap();
+
+
+
+            CreateMap<Favourite, FavReadDTO>()
+                .ReverseMap();
+
+            CreateMap<FavCreateDTO, Favourite>()
+                .ReverseMap();
+
+
+            CreateMap<Favourite, DisplayProductDTO>()
+                .IncludeMembers(src => src.Product)
+                .ReverseMap();
             #endregion
 
             #region order

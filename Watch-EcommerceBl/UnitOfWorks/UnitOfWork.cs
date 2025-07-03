@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.Repositories;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_EcommerceBl.UnitOfWorks
 {
@@ -18,6 +19,8 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
         public IGenericRepository<Image, int> imageRepository;
+        public IGenericRepository<Governorate, int> governorateRepository;
+        public IGenericRepository<Deliverymethod, int> deliveryMethodRepository;
 
         IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
@@ -100,6 +103,30 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return favouriteRepository;
             }
             
+        }
+
+        public IGenericRepository<Governorate, int> GovernorateRepository
+        {
+            get
+            {
+                if (governorateRepository == null)
+                {
+                    governorateRepository = new GenericRepository<Governorate, int>(_context);
+                }
+                return governorateRepository;
+            }
+        }
+
+        public IGenericRepository<Deliverymethod, int> DeliveryMethodRepository
+        {
+            get
+            {
+                if (deliveryMethodRepository == null)
+                {
+                    deliveryMethodRepository = new GenericRepository<Deliverymethod, int>(_context);
+                }
+                return deliveryMethodRepository;
+            }
         }
 
 

@@ -62,6 +62,16 @@ namespace Watch_Ecommerce.Services
         {
             return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
         }
+
+        public async Task<IEnumerable<Governorate>> GetAllGovernorate()
+        {
+            return await _context.Governorates.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Deliverymethod>> GetDeliverymethodsAsync()
+        {
+            return await _context.Deliverymethods.ToListAsync();
+        }
         public async Task<bool> CancelorderAsync(string userid,int orderid)
         {
             var order= await _context.Orders.FirstOrDefaultAsync(o=>o.UserId==userid && o.Id==orderid);
@@ -69,6 +79,13 @@ namespace Watch_Ecommerce.Services
             order.Status = "Cancelled";
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<decimal?> GetDeliveryCostAsync(int governorateId, int deliveryMethodId)
+        {
+            var entry = await _context.GovernorateDeliveryMethods
+                .FirstOrDefaultAsync(x => x.GovernorateId == governorateId && x.DeliveryMethodId == deliveryMethodId);
+
+            return entry?.DeliveryCost;
         }
 
 

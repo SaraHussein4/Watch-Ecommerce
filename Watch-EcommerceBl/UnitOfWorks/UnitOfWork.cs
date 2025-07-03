@@ -25,10 +25,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Governorate, int> governorateRepository;
         public IGenericRepository<Deliverymethod, int> deliveryMethodRepository;
 
-        //public IGenericRepository<ProductColor, int> productColorRepository;
-        //public IGenericRepository<ProductSize, int> productSizeRepository;
-
-
         IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
 
@@ -74,30 +70,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
         }
 
-
-        //public IGenericRepository<ProductColor, int> ProductColorRepository
-        //{
-        //    get
-        //    {
-        //        if (productColorRepository == null)
-        //        {
-        //            productColorRepository = new GenericRepository<ProductColor, int>(_context);
-        //        }
-        //        return productColorRepository;
-        //    }
-        //}
-
-        //public IGenericRepository<ProductSize, int> ProductSizeRepository
-        //{
-        //    get
-        //    {
-        //        if (productSizeRepository == null)
-        //        {
-        //            productSizeRepository = new GenericRepository<ProductSize, int>(_context);
-        //        }
-        //        return productSizeRepository;
-        //    }
-        //}
         public IGenericRepository<Product, int> ProductRepository
         {
             get
@@ -109,7 +81,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return productRepository;
             }
         }
-
 
         //product
         public IProductRepository productrepo
@@ -184,29 +155,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
             await _context.DisposeAsync();
         }
 
-        //public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
-        //{
-        //    var type = typeof(TEntity).Name;
-        //    if (!_repositories.ContainsKey(type))
-        //    {
-        //        var Repository = new GenericRepository<TEntity>(_dbContext);
-        //        _repositories.Add(type, Repository);
-        //    }
-        //    return _repositories[type] as IGenericRepository<TEntity>;
-        //}
-
-        //public IGenericRepository<TEntity, TKey> Repository<TEntity, TKey>() where TEntity : class
-        //{
-        //    var type= typeof(TEntity).Name + typeof(TKey).Name;
-
-        //    if (!_repositories.ContainsKey(type))
-        //    {
-        //        var Repository = new GenericRepository<TEntity, TKey>(_context);
-        //        _repositories.Add(type, Repository);
-        //    }
-
-        //    return _repositories[type] as IGenericRepository<TEntity, TKey>;
-        //}
     }
 }
 

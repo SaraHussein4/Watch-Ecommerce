@@ -3,12 +3,14 @@ using AutoMapper;
 using ECommerce.Core.model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.UnitOfWorks;
+using Watch_EcommerceDAL.Models;
 
 
 namespace Watch_Ecommerce.Controllers
@@ -21,12 +23,14 @@ namespace Watch_Ecommerce.Controllers
         private readonly IUnitOfWorks unitOfWork;
         private readonly IMapper mapper;
         private readonly IImageManagementService _imageManagementService;
+        private readonly TikrContext _context;
 
-        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper, IImageManagementService imageManagementService)
+        public ProductController(IUnitOfWorks unitOfWork, IMapper mapper, IImageManagementService imageManagementService, TikrContext context)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             _imageManagementService = imageManagementService;
+            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
@@ -43,7 +47,91 @@ namespace Watch_Ecommerce.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpPost("FilterProduct")]
+        public async Task<ActionResult<DisplayProductDTO>> GetFilteredProducts(ProductFilterDTO productFilterDTO)
+        {
+            var query = _context.Products.AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(productFilterDTO.SearchTerm))
+            {
+                query = query.Where(p => p.Name.Contains(productFilterDTO.SearchTerm));
+            }
+
+            if (productFilterDTO.CategoryIds != null && productFilterDTO.CategoryIds.Any())
+            {
+                query = query.Where(p => productFilterDTO.CategoryIds.Contains(p.CategoryId));
+            }
+
+            if (productFilterDTO.BrandIds != null && productFilterDTO.BrandIds.Any())
+            {
+                query = query.Where(p => productFilterDTO.BrandIds.Contains(p.ProductBrandId));
+            }
+
+            if (productFilterDTO.Genders != null && productFilterDTO.Genders.Any())
+            {
+                query = query.Where(p => productFilterDTO.Genders.Contains(p.GenderCategory));
+            }
+
+            // Apply sorting
+            query = productFilterDTO.SortBy switch
+            {
+                "priceLowToHigh" => query.OrderBy(p => p.Price),
+                "priceHighToLow" => query.OrderByDescending(p => p.Price),
+                _ => query.OrderByDescending(p => p.Id) // newest first
+            };
+
+            // Get total count before pagination
+            var totalCount = await query.CountAsync();
+
+            // Apply pagination
+            var items = await query
+                .Skip((productFilterDTO.Page - 1) * productFilterDTO.PageSize)
+                .Take(productFilterDTO.PageSize)
+                .ToListAsync();
+
+
+            var DisplayProductDTO = mapper.Map<List<DisplayProductDTO>>(items);
+            return Ok(DisplayProductDTO);
+        }
+
+        [HttpGet("best-sellers")]
+        public async Task<IActionResult> GetTopBestSellers()
+        {
+            try
+            {
+                var topProducts = await _context.Products
+                    .Include(p => p.Images.Where(i => i.isPrimary))
+                    .OrderByDescending(p => p.Id) // Or any other logic (sales count)
+                    .Take(8)
+                    .ToListAsync();
+
+                var result = mapper.Map<IEnumerable<DisplayProductDTO>>(topProducts);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching best sellers: {ex.Message}");
+            }
+        }
+
+        [HttpGet("brand-featured")]
+        public async Task<IActionResult> GetOneProductPerBrand()    
+        {
+            try
+            {
+                var products = await unitOfWork.productrepo.GetOneProductPerBrandAsync();
+                var productDTOs = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
+                return Ok(productDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving featured brand products: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetProductById(int id)
         {
             try
@@ -81,6 +169,35 @@ namespace Watch_Ecommerce.Controllers
                 await unitOfWork.CompleteAsync();
 
 
+
+                //if(productCreateDTO.Colors != null && productCreateDTO.Colors.Any())
+                //{
+                //    var colors = productCreateDTO.Colors.Split(",").Select(c => int.Parse(c));
+                //    foreach(var color in colors)
+                //    {
+                //        await unitOfWork.ProductColorRepository.AddAsync(new ProductColor
+                //        {
+                //            ProductId = product.Id,
+                //            ColorId = color
+                //        });
+                //    }
+                //}
+
+                //if (productCreateDTO.Sizes != null && productCreateDTO.Sizes.Any())
+                //{
+                //    var sizes = productCreateDTO.Sizes.Split(",").Select(s => int.Parse(s));
+
+                //    foreach (var size in sizes)
+                //    {
+                //        await unitOfWork.ProductSizeRepository.AddAsync(new ProductSize
+                //        {
+                //            ProductId = product.Id,
+                //            SizeId = size
+                //        });
+                //    }
+                //}
+
+
                 if (productCreateDTO.Images != null && productCreateDTO.Images.Any())
                 {
                     List<string> ImagePath = await _imageManagementService.AddImageAsync(productCreateDTO.Images, productCreateDTO.Name);
@@ -110,7 +227,6 @@ namespace Watch_Ecommerce.Controllers
                     await unitOfWork.ImageRepository.AddRangeAsync(Images);
                     await unitOfWork.CompleteAsync();
  
-                   //product.Images = mapper.Map<List<Image>>(productDto.Images);
                 }
 
 

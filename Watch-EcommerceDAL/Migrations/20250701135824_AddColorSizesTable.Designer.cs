@@ -4,6 +4,7 @@ using ECommerce.Core.model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Watch_EcommerceDAL.Migrations
 {
     [DbContext(typeof(TikrContext))]
-    partial class TikrContextModelSnapshot : ModelSnapshot
+    [Migration("20250701135824_AddColorSizesTable")]
+    partial class AddColorSizesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,10 +203,6 @@ namespace Watch_EcommerceDAL.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Colors")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -226,10 +225,6 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<string>("Sizes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -472,6 +467,24 @@ namespace Watch_EcommerceDAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.Color", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colors");
+                });
+
             modelBuilder.Entity("Watch_EcommerceDAL.Models.Deliverymethod", b =>
                 {
                     b.Property<int>("Id")
@@ -544,6 +557,54 @@ namespace Watch_EcommerceDAL.Migrations
                     b.HasIndex("GovernorateId");
 
                     b.ToTable("GovernorateDeliveryMethods");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.ProductColor", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "ColorId");
+
+                    b.HasIndex("ColorId");
+
+                    b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.ProductSize", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "SizeId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("productSizes");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("ECommerce.Core.model.Address", b =>
@@ -759,6 +820,44 @@ namespace Watch_EcommerceDAL.Migrations
                     b.Navigation("Governorate");
                 });
 
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.ProductColor", b =>
+                {
+                    b.HasOne("Watch_EcommerceDAL.Models.Color", "Color")
+                        .WithMany("Products")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Core.model.Product", "Product")
+                        .WithMany("Colors")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.ProductSize", b =>
+                {
+                    b.HasOne("ECommerce.Core.model.Product", "Product")
+                        .WithMany("Sizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Watch_EcommerceDAL.Models.Size", "Size")
+                        .WithMany("Products")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Size");
+                });
+
             modelBuilder.Entity("ECommerce.Core.model.Category", b =>
                 {
                     b.Navigation("Products");
@@ -771,9 +870,13 @@ namespace Watch_EcommerceDAL.Migrations
 
             modelBuilder.Entity("ECommerce.Core.model.Product", b =>
                 {
+                    b.Navigation("Colors");
+
                     b.Navigation("Images");
 
                     b.Navigation("OrderItems");
+
+                    b.Navigation("Sizes");
 
                     b.Navigation("Users");
                 });
@@ -789,6 +892,16 @@ namespace Watch_EcommerceDAL.Migrations
 
                     b.Navigation("Orders");
 
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.Color", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Watch_EcommerceDAL.Models.Size", b =>
+                {
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

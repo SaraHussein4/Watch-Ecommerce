@@ -15,6 +15,9 @@ namespace Watch_EcommerceBl.Interfaces
         IGenericRepository<Image, int> ImageRepository { get; }
         IGenericRepository<Governorate, int> GovernorateRepository { get; }
         IGenericRepository<Deliverymethod, int> DeliveryMethodRepository { get; }
+        //IGenericRepository<ProductColor, int> ProductColorRepository { get; }
+        //IGenericRepository<ProductSize, int> ProductSizeRepository { get; }
+
 
         public IProductRepository productrepo
         {

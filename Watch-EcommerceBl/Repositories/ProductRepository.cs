@@ -42,6 +42,15 @@ namespace Watch_EcommerceBl.Repositories
                                  .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<IEnumerable<Product>> GetOneProductPerBrandAsync()
+        {
+            return await context.Products
+                .Include(p => p.Images)
+                .Include(p => p.ProductBrand)
+                .GroupBy(p => p.ProductBrandId)
+                .Select(g => g.OrderByDescending(p => p.Id).FirstOrDefault())
+                .ToListAsync();
+        }
     }
 
 }

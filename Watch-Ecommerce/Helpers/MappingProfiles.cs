@@ -27,6 +27,8 @@ namespace Watch_Ecommerce.Helpers
 
             CreateMap<CategoryUpdateDTO, Category>()
                 .ReverseMap();
+            CreateMap<Governorate, GovernorateDto>();
+            CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
 
             #region ProductBrand

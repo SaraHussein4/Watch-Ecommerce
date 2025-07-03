@@ -19,9 +19,11 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
         public IGenericRepository<Image, int> imageRepository;
+        public IGenericRepository<Governorate, int> governorateRepository;
+        public IGenericRepository<Deliverymethod, int> deliveryMethodRepository;
+
         //public IGenericRepository<ProductColor, int> productColorRepository;
         //public IGenericRepository<ProductSize, int> productSizeRepository;
-
 
 
         IProductRepository _productrepo;
@@ -130,6 +132,30 @@ namespace Watch_EcommerceBl.UnitOfWorks
                 return favouriteRepository;
             }
             
+        }
+
+        public IGenericRepository<Governorate, int> GovernorateRepository
+        {
+            get
+            {
+                if (governorateRepository == null)
+                {
+                    governorateRepository = new GenericRepository<Governorate, int>(_context);
+                }
+                return governorateRepository;
+            }
+        }
+
+        public IGenericRepository<Deliverymethod, int> DeliveryMethodRepository
+        {
+            get
+            {
+                if (deliveryMethodRepository == null)
+                {
+                    deliveryMethodRepository = new GenericRepository<Deliverymethod, int>(_context);
+                }
+                return deliveryMethodRepository;
+            }
         }
 
 

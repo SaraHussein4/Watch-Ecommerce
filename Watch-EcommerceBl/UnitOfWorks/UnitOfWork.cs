@@ -19,6 +19,9 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Category, int> categoryRepository;
         public IGenericRepository<ProductBrand, int> productBrandRepository;
         public IGenericRepository<Image, int> imageRepository;
+        
+        public IUserRepository userRepository;
+
         //public IGenericRepository<ProductColor, int> productColorRepository;
         //public IGenericRepository<ProductSize, int> productSizeRepository;
 
@@ -132,6 +135,18 @@ namespace Watch_EcommerceBl.UnitOfWorks
             
         }
 
+
+        // User
+        public IUserRepository UserRepository
+        {
+            get { 
+                if(userRepository == null)
+                {
+                    userRepository = new UserRepository(_context);
+                }
+                return userRepository;
+            }
+        }
 
         public async Task<int> CompleteAsync()
         {

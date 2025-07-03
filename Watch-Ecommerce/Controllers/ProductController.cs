@@ -186,7 +186,6 @@ namespace Watch_Ecommerce.Controllers
                 //if (productCreateDTO.Sizes != null && productCreateDTO.Sizes.Any())
                 //{
                 //    var sizes = productCreateDTO.Sizes.Split(",").Select(s => int.Parse(s));
-
                 //    foreach (var size in sizes)
                 //    {
                 //        await unitOfWork.ProductSizeRepository.AddAsync(new ProductSize

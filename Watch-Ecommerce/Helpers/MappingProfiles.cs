@@ -10,6 +10,7 @@ using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
 using Watch_Ecommerce.DTOS.Size;
+using Watch_Ecommerce.DTOS.User;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Helpers
@@ -23,6 +24,9 @@ namespace Watch_Ecommerce.Helpers
                 .ReverseMap();
     
             CreateMap<Category, CategoryReadDTO>()
+                .ReverseMap();
+
+            CreateMap<Category, CategoryDTO>()
                 .ReverseMap();
 
             CreateMap<CategoryUpdateDTO, Category>()
@@ -49,6 +53,8 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<Product, DisplayProductDTO>()
             .ForMember(dest => dest.ProductBrand,
                        opt => opt.MapFrom(src => src.ProductBrand))
+            .ForMember(dest => dest.Category,
+                       opt => opt.MapFrom(src => src.Category))
             .ForMember(dest => dest.Colors, opt => opt.MapFrom(src =>
                 string.IsNullOrEmpty(src.Colors)
                     ? new List<string>()
@@ -88,29 +94,21 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
 
-            //#region Color
-            //CreateMap<Color, ColorReadDTO>().ReverseMap();
-            
-            //CreateMap<ProductColor, ColorReadDTO>()
-            //    .ForMember(dest => dest.Id,
-            //        opt => opt.MapFrom(src => src.ColorId))
-            //    .ForMember(dest => dest.Name,
-            //        opt => opt.MapFrom(src=> src.Color.Name))
-            //    .ReverseMap();
-
-            //#endregion
-            //#region Size
-            //CreateMap<Size, SizeReadDTO>().ReverseMap();
-            //CreateMap<ProductSize, SizeReadDTO>()
-            //    .ForMember(dest => dest.Id,
-            //        opt => opt.MapFrom(src => src.SizeId))
-            //    .ForMember(dest => dest.Name,
-            //        opt => opt.MapFrom(src => src.Size.Name))
-            //    .ReverseMap();
-
-            //#endregion
             #region image
             CreateMap<Image,AddImgDto>().ReverseMap();
+            #endregion
+
+            #region User
+            CreateMap<User, UserReadDTO>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Email,
+                    opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhoneNumber,
+                    opt => opt.MapFrom(src => src.PhoneNumber))
+                .ReverseMap();
             #endregion
         }
     }

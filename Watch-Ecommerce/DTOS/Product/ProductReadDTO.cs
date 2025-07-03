@@ -17,6 +17,5 @@ namespace Watch_Ecommerce.DTOS.Product
         public int WarrentyYears { get; set; }
         public List<string> Colors { get; set; }
         public List<string> Sizes { get; set; }
-     
     }
 }

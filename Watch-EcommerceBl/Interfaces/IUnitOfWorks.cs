@@ -18,6 +18,8 @@ namespace Watch_EcommerceBl.Interfaces
         //IGenericRepository<ProductColor, int> ProductColorRepository { get; }
         //IGenericRepository<ProductSize, int> ProductSizeRepository { get; }
 
+        IUserRepository UserRepository { get; }
+
 
         public IProductRepository productrepo
         {

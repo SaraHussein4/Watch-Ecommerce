@@ -292,6 +292,29 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Error deleting product: {ex.Message}");
             }
         }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedProducts(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var result = await unitOfWork.productrepo.GetPageAsync(page, pageSize);
+                var products = result.Item1;
+                var totalCount = result.Item2;
+
+                var mappedProducts = mapper.Map<IEnumerable<DisplayProductDTO>>(products);
+
+                return Ok(new
+                {
+                    items = mappedProducts,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching paged products: {ex.Message}");
+            }
+        }
     }
 }
 

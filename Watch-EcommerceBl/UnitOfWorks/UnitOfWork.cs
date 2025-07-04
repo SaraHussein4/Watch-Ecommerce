@@ -21,7 +21,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
         public IGenericRepository<Image, int> imageRepository;
         
         public IUserRepository userRepository;
-        public IFavRepository favRepository;
 
 
         public IGenericRepository<Governorate, int> governorateRepository;
@@ -134,18 +133,6 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
         }
 
-
-        public IFavRepository FavRepository
-        {
-            get
-            {
-                if(favRepository == null)
-                {
-                    favRepository = new FavRepository(_context);
-                }
-                return favRepository;
-            }
-        }
 
         // User
         public IUserRepository UserRepository

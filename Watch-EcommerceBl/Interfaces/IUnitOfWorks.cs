@@ -17,7 +17,6 @@ namespace Watch_EcommerceBl.Interfaces
         IGenericRepository<Deliverymethod, int> DeliveryMethodRepository { get; }
 
         IUserRepository UserRepository { get; }
-        IFavRepository FavRepository { get; }
 
 
         public IProductRepository productrepo

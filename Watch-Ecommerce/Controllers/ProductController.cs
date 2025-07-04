@@ -48,7 +48,7 @@ namespace Watch_Ecommerce.Controllers
         }
 
         [HttpPost("FilterProduct")]
-        public async Task<ActionResult<DisplayProductDTO>> GetFilteredProducts(ProductFilterDTO productFilterDTO)
+        public async Task<ActionResult> GetFilteredProducts(ProductFilterDTO productFilterDTO)
         {
             var query = _context.Products.AsQueryable();
 
@@ -91,8 +91,12 @@ namespace Watch_Ecommerce.Controllers
                 .ToListAsync();
 
 
-            var DisplayProductDTO = mapper.Map<List<DisplayProductDTO>>(items);
-            return Ok(DisplayProductDTO);
+            var DisplayProductsDTO = mapper.Map<List<DisplayProductDTO>>(items);
+            return Ok(new
+            {
+                items = DisplayProductsDTO,
+                totalCount = totalCount
+            });
         }
 
         [HttpGet("best-sellers")]

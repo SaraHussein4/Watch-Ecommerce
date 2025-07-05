@@ -2,6 +2,7 @@
 using ECommerce.Core.model;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
+using Watch_Ecommerce.DTOS.Address;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Color;
 using Watch_Ecommerce.DTOS.Fav;
@@ -125,7 +126,17 @@ namespace Watch_Ecommerce.Helpers
                 .ForMember(dest => dest.PhoneNumber,
                     opt => opt.MapFrom(src => src.PhoneNumber))
                 .ReverseMap();
+            CreateMap<User, UserProfileReadDTO>();
+            CreateMap<UserProfileUpdateDTO, User>()
+                 .ForMember(dest => dest.Addresses, opt => opt.Ignore());
             #endregion
+
+            #region address
+
+            CreateMap<AddressDTO, Address>()
+                .ReverseMap();
+            #endregion
+
         }
     }
 }

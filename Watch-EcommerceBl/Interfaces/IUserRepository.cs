@@ -9,6 +9,9 @@ namespace Watch_EcommerceBl.Interfaces
 {
     public interface IUserRepository: IGenericRepository<User, string>
     {
-        IEnumerable<User> GetCustomers();   
+        IEnumerable<User> GetCustomers();
+        Task<User> GetByIdWithAddressesAsync(string id);
+
+
     }
 }

@@ -18,7 +18,7 @@ namespace Watch_Ecommerce.Controllers
 
         public ImageController(IUnitOfWorks UOW, IMapper mapper, IImageManagementService imageManagementService)
         {
-            this.UOW = UOW;
+            this.UOW = UOW; 
             this.mapper = mapper;
             this.imageManagementService = imageManagementService;
         }
@@ -44,13 +44,13 @@ namespace Watch_Ecommerce.Controllers
           
             await UOW.ImageRepository.AddRangeAsync(image);
             await UOW.CompleteAsync();
-            return Ok(new { message = "Image added successfully", images = imageUrl });
+            return Ok(new { message = "Image added successfully", images = imageUrl});
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteImage(int id)
         {
             var resualt = await imageManagementService.DeleteImageAsynce(id);
-            if(!resualt)
+            if (!resualt)
                 return NotFound("Image not found");
 
             return Ok(new { message = "Image deleted successfully" });

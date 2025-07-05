@@ -111,6 +111,7 @@ namespace Watch_Ecommerce.Helpers
 
             #region image
             CreateMap<Image,AddImgDto>().ReverseMap();
+
             #endregion
 
             #region User

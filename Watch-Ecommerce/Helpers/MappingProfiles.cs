@@ -72,6 +72,7 @@ namespace Watch_Ecommerce.Helpers
             #endregion
             #region image
             CreateMap<Image,AddImgDto>().ReverseMap();
+
             #endregion
         }
     }

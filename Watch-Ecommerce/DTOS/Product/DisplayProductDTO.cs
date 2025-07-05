@@ -1,4 +1,5 @@
-﻿using Watch_Ecommerce.DTOS.Product;
+﻿using Watch_Ecommerce.DTOS.Category;
+using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.DTOS.ProductBrand;
 
 namespace Watch_Ecommerce.DTOs.Product
@@ -9,5 +10,6 @@ namespace Watch_Ecommerce.DTOs.Product
         public int ProductBrandId { get; set; }
         public List<ImageDTO> Images { get; set; } = new List<ImageDTO>();
         public ProductBrandWithoutProductsCollectioDTO ProductBrand { get; set; }
+        public CategoryDTO Category {  get; set; }
     }
 }

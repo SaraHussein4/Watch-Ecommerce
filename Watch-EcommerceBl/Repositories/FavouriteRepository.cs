@@ -18,9 +18,9 @@ namespace Watch_EcommerceBl.Repositories
         }
         public async Task<Favourite> AddToFav(string userid, int productid)
         {
-            var favWatch = await con.Favourites.FirstOrDefaultAsync(f => f.UserId == userid
-            && f.ProductId == productid);
-            if (favWatch != null) return favWatch;
+            if (await con.Favourites.AnyAsync(f => f.UserId == userid && f.ProductId == productid))
+                return null;
+
             var newFav = new Favourite()
             {
                 UserId = userid,
@@ -30,6 +30,22 @@ namespace Watch_EcommerceBl.Repositories
             await con.SaveChangesAsync();
             return newFav;
         }
+
+        public async Task<IEnumerable<Favourite>> GetAllForUser(string UserId)
+        {
+            return await _context.Favourites.Where(f => f.UserId == UserId).ToListAsync();
+        }
+
+        public async Task<Favourite> GetByIdAsync(int ProductId, string UserId)
+        {
+            return await _context.Favourites.FirstOrDefaultAsync(f => f.ProductId == ProductId && f.UserId == UserId);
+        }
+
+        public async Task<int> GetCountAsync(string UserId)
+        {
+            return await _context.Favourites.Where(f => f.UserId == UserId).CountAsync();
+        }
+
         public async Task<bool> RemoveFromFav(string userid, int productid)
         {
             var myFavWatch = await con.Favourites.FirstOrDefaultAsync(f => f.UserId == userid

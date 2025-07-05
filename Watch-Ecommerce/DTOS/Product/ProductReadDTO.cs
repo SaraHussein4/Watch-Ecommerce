@@ -1,4 +1,6 @@
 ﻿using ECommerce.Core.Enumerators;
+using Watch_Ecommerce.DTOS.Color;
+using Watch_Ecommerce.DTOS.Size;
 
 namespace Watch_Ecommerce.DTOS.Product
 {
@@ -15,6 +17,5 @@ namespace Watch_Ecommerce.DTOS.Product
         public int WarrentyYears { get; set; }
         public List<string> Colors { get; set; }
         public List<string> Sizes { get; set; }
-     
     }
 }

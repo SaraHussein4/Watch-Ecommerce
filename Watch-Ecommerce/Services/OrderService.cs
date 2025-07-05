@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Services
@@ -20,17 +21,21 @@ namespace Watch_Ecommerce.Services
             var basket = await _cartRepository.GetBasketAsync(userId);
             if (basket == null || !basket.Items.Any())
                 return null;
-          
+
             var deliveryMethod = await _context.Deliverymethods.FindAsync(deliveryMethodId);
             if (deliveryMethod == null)
                 return null;
+
+            var subTotal = basket.Items.Sum(i => i.Price * i.Quantity);
+
             var order = new Order
             {
                 UserId = userId,
                 DeliveryMethodId = deliveryMethodId,
                 Status = "Pending",
                 Date = DateTime.Now,
-                Amount = basket.Items.Sum(i => i.Price * i.Quantity),
+                SubTotal = subTotal,
+                Amount = subTotal + deliveryMethod.Cost, 
 
                 OrderAddress = new OrderAddress
                 {
@@ -57,7 +62,8 @@ namespace Watch_Ecommerce.Services
 
             return order;
         }
-      
+
+
         public async Task<Order> GetOrderByIdAsynce(int id)
         {
             return await _context.Orders.FirstOrDefaultAsync(f=>f.Id==id);
@@ -69,6 +75,19 @@ namespace Watch_Ecommerce.Services
             order.Status = "Cancelled";
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<decimal?> GetDeliveryCostAsync(int governorateId, int deliveryMethodId)
+        {
+            var entry = await _context.GovernorateDeliveryMethods
+                .FirstOrDefaultAsync(x => x.GovernorateId == governorateId && x.DeliveryMethodId == deliveryMethodId);
+
+            return entry?.DeliveryCost;
+        }
+
+        public async Task<Order?> GetOrderByIdForUserAsync(string userId, int orderId)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
         }
 
 

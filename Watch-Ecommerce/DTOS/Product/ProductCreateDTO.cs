@@ -1,4 +1,6 @@
 ﻿using ECommerce.Core.Enumerators;
+using System.Drawing;
+using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.DTOs.Product
 {
@@ -12,8 +14,9 @@ namespace Watch_Ecommerce.DTOs.Product
         public string GenderCategory { get; set; }
         public bool WaterResistance { get; set; }
         public int WarrentyYears { get; set; }
-        public List<string> Colors { get; set; }
-        public List<string> Sizes { get; set; }
+
+        public string Colors { get; set; }
+        public string Sizes { get; set; }
 
         // Foreign Key
         public int ProductBrandId { get; set; }

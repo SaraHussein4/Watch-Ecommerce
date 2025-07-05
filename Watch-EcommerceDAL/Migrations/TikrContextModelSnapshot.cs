@@ -141,6 +141,9 @@ namespace Watch_EcommerceDAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -197,7 +200,7 @@ namespace Watch_EcommerceDAL.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.PrimitiveCollection<string>("Colors")
+                    b.Property<string>("Colors")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -224,7 +227,7 @@ namespace Watch_EcommerceDAL.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.PrimitiveCollection<string>("Sizes")
+                    b.Property<string>("Sizes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

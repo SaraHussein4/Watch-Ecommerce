@@ -31,6 +31,19 @@ namespace Watch_EcommerceBl.Repositories
 
         }
 
+        public async Task<CustomerBasket?> RemoveItemFromBasketAsync(string userId, int productId)
+        {
+            var basket = await GetBasketAsync(userId);
+            if (basket == null) return null;
+
+            var itemToRemove = basket.Items.FirstOrDefault(item => item.id == productId);
+            if (itemToRemove == null) return basket;
+
+            basket.Items.Remove(itemToRemove);
+
+            return await UpdateBasketAsync(basket);
+        }
+
         public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket Basket)
         {
             var JsonBasket = JsonSerializer.Serialize(Basket);

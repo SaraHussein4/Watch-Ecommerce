@@ -8,6 +8,7 @@ using System.Security.Claims;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.Services;
+using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Controllers
@@ -19,10 +20,12 @@ namespace Watch_Ecommerce.Controllers
     {
         private readonly OrderService OrderService;
         private readonly IMapper mapper;
+        private readonly IUnitOfWorks _unitOfWork;
 
-        public OrderController(OrderService orderService, IMapper mapper)
+        public OrderController(OrderService orderService, IUnitOfWorks unitOfWork, IMapper mapper)
         {
             OrderService = orderService;
+            _unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
         [HttpPost]
@@ -48,15 +51,41 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderByIdForCurrentUser(int orderId)
+        {
+            try
+            {
+                var userClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userClaims == null)
+                    return Unauthorized("User not authenticated");
+
+                string userId = userClaims.Value;
+
+                var order = await OrderService.GetOrderByIdForUserAsync(userId, orderId);
+                if (order == null)
+                    return NotFound("Order not found or does not belong to this user.");
+
+                var orderDto = mapper.Map<OrderDto>(order);
+                return Ok(orderDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetOrderByID(int id)
         {
             try
             {
-                var myorder= await OrderService.GetOrderByIdAsynce(id);
+                var myorder = await OrderService.GetOrderByIdAsynce(id);
                 if (myorder == null)
                     return NotFound();
-                var orderDetails=mapper.Map<OrderDetailsDto>(myorder);
+                var orderDetails = mapper.Map<OrderDetailsDto>(myorder);
                 return Ok(orderDetails);
             }
             catch (Exception ex)
@@ -73,8 +102,8 @@ namespace Watch_Ecommerce.Controllers
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("User not authenticated");
-                var orderCancel= await OrderService.CancelorderAsync(userId,orderid);
-                if(orderCancel == null)
+                var orderCancel = await OrderService.CancelorderAsync(userId, orderid);
+                if (orderCancel == null)
                     return BadRequest("Cannot cancel this order. It may have already been shipped or does not exist.");
                 return Ok("Order cancelled successfully.");
             }
@@ -83,5 +112,58 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("Governorate")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<GovernorateDto>>> GetGovernorates()
+        {
+            try
+            {
+                var governorates = await _unitOfWork.GovernorateRepository.GetAllAsync();
+                var dto = mapper.Map<IEnumerable<GovernorateDto>>(governorates);
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving governorates: {ex.Message}");
+            }
+        }
+
+        [HttpGet("DeliveryMethods")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<DeliverymethodDto>>> GetDeliveries()
+        {
+            try
+            {
+                var deliveryMethods = await _unitOfWork.DeliveryMethodRepository.GetAllAsync();
+                var dto = mapper.Map<IEnumerable<DeliverymethodDto>>(deliveryMethods);
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving delivery methods: {ex.Message}");
+            }
+        }
+
+        [HttpGet("DeliveryCost")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDeliveryCost(int governorateId, int deliveryMethodId)
+        {
+            try
+            {
+                var cost = await OrderService.GetDeliveryCostAsync(governorateId, deliveryMethodId);
+
+                if (cost == null)
+                    return NotFound("No delivery cost found for this governorate and method combination.");
+
+                return Ok(cost);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+
+
     }
 }

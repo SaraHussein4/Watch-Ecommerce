@@ -18,6 +18,7 @@ namespace ECommerce.Core.model
         public int DeliveryMethodId { get; set; }
         public virtual Deliverymethod Deliverymethod { get; set; }
 
+        public decimal SubTotal { get; set; }
         // Foreign Key
         public string UserId { get; set; }
         

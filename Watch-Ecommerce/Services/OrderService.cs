@@ -1,5 +1,6 @@
 ﻿using ECommerce.Core.model;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_EcommerceBl.Interfaces;
 using Watch_EcommerceBl.UnitOfWorks;
@@ -27,7 +28,6 @@ namespace Watch_Ecommerce.Services
                 return null;
 
             var subTotal = basket.Items.Sum(i => i.Price * i.Quantity);
-
             var order = new Order
             {
                 UserId = userId,
@@ -36,7 +36,7 @@ namespace Watch_Ecommerce.Services
                 Date = DateTime.Now,
                 SubTotal = subTotal,
                 Amount = subTotal + deliveryMethod.Cost, 
-
+                PaymentInterntId=basket.PaymentInterntId,
                 OrderAddress = new OrderAddress
                 {
                     FirstName = dto.FirstName,

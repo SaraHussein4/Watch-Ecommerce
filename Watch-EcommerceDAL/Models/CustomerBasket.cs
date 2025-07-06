@@ -12,6 +12,10 @@ namespace Watch_EcommerceDAL.Models
         {
             Id = id;
         }
+        //payment
+        public string PaymentInterntId { get; set; }
+        public string ClientSecret { get; set; }
+        public int? DeliveryMethodId { get; set; }
         public string Id { get; set; }
         public List<CartItem> Items { get; set; }
     }

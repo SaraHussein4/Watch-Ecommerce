@@ -22,7 +22,7 @@ namespace Watch_Ecommerce.Controllers
             this.mapper = mapper;
         }
         //create or update endpoint
-        [HttpPost("{basketId}")]
+        [HttpPost]
         public async Task<ActionResult<CustomerBasketDto>> CreateOrUpdatePayment(string basketId)
         {
             var customerBasket=await paymentServices.CreateOrUpdatePayment(basketId);

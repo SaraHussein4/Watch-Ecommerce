@@ -68,9 +68,15 @@ namespace Watch_Ecommerce.Helpers
                     : src.Sizes.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()));
 
             CreateMap<AddProductDTO, Product>().ReverseMap();
-            
+
             CreateMap<Product, UpdateProductDTO>().ReverseMap();
-            
+            CreateMap<UpdateProductDTO, Product>()
+   .ForMember(dest => dest.Colors, opt => opt.MapFrom(src =>
+       src.Colors != null ? string.Join(",", src.Colors) : null))
+   .ForMember(dest => dest.Sizes, opt => opt.MapFrom(src =>
+       src.Sizes != null ? string.Join(",", src.Sizes) : null))
+   .ReverseMap();
+
             CreateMap<Image, ImageDTO>().ReverseMap();
 
 

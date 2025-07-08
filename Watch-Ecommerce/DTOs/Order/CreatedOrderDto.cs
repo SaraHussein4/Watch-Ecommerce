@@ -11,5 +11,6 @@ namespace Watch_Ecommerce.DTOs.Order
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Delivery method is required.")]
         public int DeliveryMethodId { get; set; }
+        public string PaymentMethod { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace ECommerce.Core.model
         public OrderAddress OrderAddress { get; set; }
         public int DeliveryMethodId { get; set; }
         public virtual Deliverymethod Deliverymethod { get; set; }
-
+        public string PaymentMethod { get; set; }
         public decimal SubTotal { get; set; }
         // Foreign Key
         public string UserId { get; set; }
@@ -25,5 +25,6 @@ namespace ECommerce.Core.model
         // Navigation Property
         public virtual User User { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public string PaymentStatus { get; set; }
     }
 }

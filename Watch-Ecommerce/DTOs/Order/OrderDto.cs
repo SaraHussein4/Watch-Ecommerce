@@ -11,6 +11,8 @@
         public OrderAddressDto OrderAddress { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }
         public DeliverymethodDto Deliverymethod { get; set; }
+        public string PaymentMethod { get; set; }
+        public string PaymentStatus { get; set; }
 
     }
 }

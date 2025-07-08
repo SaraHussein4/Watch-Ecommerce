@@ -12,7 +12,7 @@ namespace Watch_EcommerceBl.Repositories
     {
         private readonly TikrContext _context;
         public UserRepository(TikrContext context): base(context)
-        {
+        { 
             _context = context;
         }
 

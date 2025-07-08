@@ -38,7 +38,7 @@ namespace Watch_Ecommerce.Controllers
                     return Unauthorized("User not authenticated");
                 string userId = userclaims.Value;
 
-                var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress);
+                var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress, dto.PaymentMethod);
 
                 if (order == null)
                     return BadRequest("Basket is empty or something went wrong.");
@@ -103,7 +103,7 @@ namespace Watch_Ecommerce.Controllers
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("User not authenticated");
                 var orderCancel = await OrderService.CancelorderAsync(userId, orderid);
-                if (orderCancel == null)
+                if (!orderCancel)
                     return BadRequest("Cannot cancel this order. It may have already been shipped or does not exist.");
                 return Ok("Order cancelled successfully.");
             }
@@ -163,6 +163,42 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
+
+
+        [HttpPost("CreateStripe")]
+        public async Task<IActionResult> CreateStripeSession([FromBody] CreatedOrderDto dto)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress, "card");
+
+            if (order == null)
+                return BadRequest("Failed to create order.");
+
+            var sessionUrl = await OrderService.CreateStripeSessionAsync(order.Id);
+
+            if (string.IsNullOrEmpty(sessionUrl))
+                return BadRequest("Could not create Stripe session.");
+
+            return Ok(new { url = sessionUrl });
+        }
+
+
+        [HttpPost("confirm-payment")]
+        public async Task<IActionResult> ConfirmPayment([FromQuery] string sessionId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var confirmed = await OrderService.ConfirmStripeOrderAsync(sessionId, userId);
+            if (!confirmed)
+                return BadRequest("Payment not confirmed.");
+
+            return Ok("Payment confirmed and order updated.");
+        }
+
 
 
     }

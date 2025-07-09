@@ -9,7 +9,7 @@ namespace Watch_Ecommerce.DTOs.Product
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public string Status { get; set; }
+        //public string Status { get; set; }
         public Gender GenderCategory { get; set; }
         public bool WaterResistance { get; set; }
         public int WarrentyYears { get; set; }

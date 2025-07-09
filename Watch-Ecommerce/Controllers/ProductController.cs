@@ -170,6 +170,7 @@ namespace Watch_Ecommerce.Controllers
                     return BadRequest("Invalid CategoryId or ProductBrandId.");
 
                 var product = mapper.Map<Product>(productCreateDTO);
+                product.Status = "available"; // Default status
                 await unitOfWork.productrepo.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 

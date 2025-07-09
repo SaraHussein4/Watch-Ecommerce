@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
+using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
+using Watch_Ecommerce.DTOS;
 using Watch_Ecommerce.DTOS.Address;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Color;
@@ -13,7 +15,6 @@ using Watch_Ecommerce.DTOS.ProductBrand;
 using Watch_Ecommerce.DTOS.Size;
 using Watch_Ecommerce.DTOS.User;
 using Watch_EcommerceDAL.Models;
-using Watch_Ecommerce.DTOS;
 namespace Watch_Ecommerce.Helpers
 {
     public class MappingProfiles : Profile
@@ -75,8 +76,8 @@ namespace Watch_Ecommerce.Helpers
 
 
             CreateMap<ProductCreateDTO, Product>()
-                .ForMember(src => src.Images,
-                            opt => opt.Ignore())
+                .ForMember((src) => src.Images, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ReverseMap();
             #endregion
 

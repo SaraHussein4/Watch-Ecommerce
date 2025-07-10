@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Core.model;
@@ -17,5 +18,8 @@ namespace Watch_EcommerceBl.Interfaces
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TKey id);
         Task<bool> ExistsAsync(TKey id);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
+
+
     }
 }

@@ -69,8 +69,16 @@ namespace Watch_Ecommerce.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProductBrandReadDTO>> PostCategory(ProductBrandCreateDTO productBrandCreateDTO)
+        public async Task<ActionResult<ProductBrandReadDTO>> PostBrand(ProductBrandCreateDTO productBrandCreateDTO)
         {
+            var exists = await _unitOfWorks.ProductBrandRepository
+                      .AnyAsync(b => b.Name.ToLower() == productBrandCreateDTO.Name.ToLower());
+
+            if (exists)
+            {
+                return BadRequest("Brand already exists.");
+            }
+
             var brand = _mapper.Map<ProductBrand>(productBrandCreateDTO);
             await _unitOfWorks.ProductBrandRepository.AddAsync(brand);
             await _unitOfWorks.CompleteAsync();

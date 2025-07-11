@@ -6,16 +6,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Watch_Ecommerce.DTOs.Order;
+using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class OrderController : ControllerBase
     {
         private readonly OrderService OrderService;
@@ -112,6 +114,73 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("orders")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetOrders(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+                int totalCount = orders.Count();
+                orders = orders.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.Date);
+                var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+                return Ok(new
+                {
+                    orders = dto,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving orders: {ex.Message}");
+            }
+        }
+
+        [HttpGet("ordersForUser")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetOrdersForUser(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var userclaims = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userclaims == null)
+                    return Unauthorized("User not authenticated");
+                string userId = userclaims.Value;
+
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+                int totalCount = orders.Where(o => o.UserId == userId).Count();
+                orders = orders.Where(o => o.UserId == userId).Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.Date);
+                var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+                return Ok(new
+                {
+                    orders = dto,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving orders: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> UpdateOrder(int id, OrderDetailsDto orderDetailsDto)
+        {
+            if (id != orderDetailsDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(id);
+            if (order == null)
+            {
+                return BadRequest();
+            }
+            mapper.Map(orderDetailsDto, order);
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.CompleteAsync();
+            return NoContent();
+        }
+
 
         [HttpGet("Governorate")]
         [AllowAnonymous]

@@ -104,7 +104,10 @@ namespace Watch_Ecommerce.Helpers
 
             #region order
             CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
-            CreateMap<Order,OrderDetailsDto>().ReverseMap();
+            CreateMap<Order,OrderDetailsDto>()
+                .ForMember(dest => dest.Email,
+                    opt => opt.MapFrom(src => src.User.Email))
+                .ReverseMap();
             CreateMap<Order, OrderDto>();
             CreateMap<OrderItem, OrderItemDto>();
             CreateMap<OrderAddress, OrderAddressDto>();

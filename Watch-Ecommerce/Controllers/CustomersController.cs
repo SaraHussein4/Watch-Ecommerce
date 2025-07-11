@@ -27,11 +27,17 @@ namespace Watch_Ecommerce.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserReadDTO>> GetCustomers()
+        public ActionResult<IEnumerable<UserReadDTO>> GetCustomers(int page = 1, int pageSize = 10)
         {
             var customers = _unitOfWorks.UserRepository.GetCustomers();
+            var totalCount = customers.Count();
+            customers = customers.Skip((page - 1) * pageSize).Take(pageSize);
             var customersReadDTO = _mapper.Map<IEnumerable<UserReadDTO>>(customers);
-            return Ok(customersReadDTO);
+            return Ok(new
+            {
+                customers = customersReadDTO,
+                totalCount = totalCount
+            });
         }
 
         [Authorize]

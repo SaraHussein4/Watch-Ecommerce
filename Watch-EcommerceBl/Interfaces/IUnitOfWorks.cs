@@ -16,6 +16,7 @@ namespace Watch_EcommerceBl.Interfaces
         IGenericRepository<Governorate, int> GovernorateRepository { get; }
         IGenericRepository<Deliverymethod, int> DeliveryMethodRepository { get; }
         IGenericRepository<Order, int> OrderRepository { get; }
+        IGenericRepository<Address, int> AddressReposirory { get; }
 
         IUserRepository UserRepository { get; }
 

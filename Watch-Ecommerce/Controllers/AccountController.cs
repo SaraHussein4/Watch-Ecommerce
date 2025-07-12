@@ -58,7 +58,7 @@ namespace Watch_Ecommerce.Controllers
                 return BadRequest(new { statusCode = 400, errors });
             }
 
-            await _userManager.AddToRoleAsync(user, "Admin");
+            await _userManager.AddToRoleAsync(user, "User");
 
             var address = new Address
             {
@@ -77,7 +77,7 @@ namespace Watch_Ecommerce.Controllers
                 Name = model.Name,
                 Email = model.Email,
                 Token = await _tokenService.CreateTokenAsync(user, _userManager),
-                Role = "Admin"
+                Role = "User"
             };
 
             return Ok(returnUser);

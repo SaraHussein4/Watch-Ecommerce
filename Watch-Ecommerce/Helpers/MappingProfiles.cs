@@ -79,6 +79,10 @@ namespace Watch_Ecommerce.Helpers
                 .ForMember((src) => src.Images, opt => opt.Ignore())
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ReverseMap();
+
+           CreateMap<UpdateProductDTO, Product>()
+                .IncludeBase<ProductCreateDTO, Product>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore());
             #endregion
 
             #region fav

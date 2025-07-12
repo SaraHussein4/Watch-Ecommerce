@@ -89,8 +89,8 @@ namespace Watch_Ecommerce.Services
                 PaymentMethodTypes = new List<string> { "card" },
                 Mode = "payment",
                 LineItems = lineItems,
-                SuccessUrl = $"https://localhost:4200/payment-success?sessionId={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = "https://localhost:4200/cart",
+                SuccessUrl = $"http://localhost:4200/payment-success?sessionId={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = "http://localhost:4200/cart",
                 InvoiceCreation = new SessionInvoiceCreationOptions
                 {
                     Enabled = true,

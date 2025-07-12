@@ -24,6 +24,6 @@ namespace Watch_Ecommerce.DTOs.Product
 
 
         // images
-        public  IFormFileCollection Images { get; set; }
+        public  IFormFileCollection? Images { get; set; }
     }
 }

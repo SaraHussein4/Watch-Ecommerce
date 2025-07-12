@@ -308,7 +308,7 @@ namespace Watch_Ecommerce.Controllers
                     return NotFound($"Product with ID {id} not found.");
                 await unitOfWork.productrepo.DeleteAsync(id);
                 await unitOfWork.CompleteAsync();
-                return NoContent(); // 204 No Content
+                return NoContent(); 
             }
             catch (Exception ex)
             {

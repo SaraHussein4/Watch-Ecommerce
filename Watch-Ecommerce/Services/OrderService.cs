@@ -1,5 +1,6 @@
 ﻿using ECommerce.Core.model;
 using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.BillingPortal;
@@ -43,6 +44,7 @@ namespace Watch_Ecommerce.Services
             if (governorate == null)
                 return null;
             var subTotal = basket.Items.Sum(i => i.Price * i.Quantity);
+
             var deliveryCost = governorate.DeliveryCost + deliveryMethod.Cost;
 
             var orderItems = basket.Items.Select(i => new OrderItem
@@ -78,6 +80,7 @@ namespace Watch_Ecommerce.Services
                 Amount = subTotal + deliveryCost,
                 PaymentMethod = paymentMethod,
                 PaymentStatus = "Pending",
+
                 OrderAddress = new OrderAddress
                 {
                     FirstName = dto.FirstName,

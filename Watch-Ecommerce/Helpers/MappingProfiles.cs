@@ -2,7 +2,6 @@
 using ECommerce.Core.model;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
-using Watch_Ecommerce.DTOS.BasketDto;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Color;
 using Watch_Ecommerce.DTOS.Fav;
@@ -134,9 +133,7 @@ namespace Watch_Ecommerce.Helpers
                 .ReverseMap();
             #endregion
 
-            #region basket
-            CreateMap<CustomerBasket,CustomerBasketDto>() .ReverseMap();
-            #endregion
+           
         }
     }
 }

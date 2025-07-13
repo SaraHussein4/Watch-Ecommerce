@@ -20,8 +20,7 @@ namespace ECommerce.Core.model
 
         public decimal SubTotal { get; set; }
 
-        //payment
-        public string PaymentInterntId { get; set; }
+        
 
         // Foreign Key
         public string UserId { get; set; }

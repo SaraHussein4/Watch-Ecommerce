@@ -33,7 +33,6 @@ namespace Watch_Ecommerce
             builder.Services.AddScoped<OrderService>();
             builder.Services.AddScoped<CartRepositry>();
 
-            builder.Services.AddScoped<IPaymentServices, PaymentServices>();
 
             #region Database & User Identity
             builder.Services.AddDbContext<TikrContext>(options =>

@@ -36,7 +36,6 @@ namespace Watch_Ecommerce.Services
                 Date = DateTime.Now,
                 SubTotal = subTotal,
                 Amount = subTotal + deliveryMethod.Cost, 
-                PaymentInterntId=basket.PaymentInterntId,
                 OrderAddress = new OrderAddress
                 {
                     FirstName = dto.FirstName,

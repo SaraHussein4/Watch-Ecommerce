@@ -15,8 +15,6 @@ namespace Watch_EcommerceDAL.Models
         public string Brand { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
-        //public string PaymentInterntId { get; set; }
-        //public string ClientSecret { get; set; }
-        public int? DeliveryMethodId { get; set; }
+        public int productQuantity { get; set; }
     }
 }

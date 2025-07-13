@@ -1,10 +1,12 @@
 
+using System.IO;
+using System.Linq;
 using AutoMapper;
 using ECommerce.Core.model;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 using Watch_Ecommerce.DTOs.Product;
 using Watch_Ecommerce.DTOS.Product;
 using Watch_Ecommerce.Services;
@@ -169,6 +171,7 @@ namespace Watch_Ecommerce.Controllers
                     return BadRequest("Invalid CategoryId or ProductBrandId.");
 
                 var product = mapper.Map<Product>(productCreateDTO);
+                product.Status = "available"; // Default status
                 await unitOfWork.productrepo.AddAsync(product);
                 await unitOfWork.CompleteAsync();
 
@@ -244,7 +247,8 @@ namespace Watch_Ecommerce.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDTO productDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductDTO productDto)
         {
             if (productDto == null || productDto.Id != id)
                 return BadRequest("Invalid data.");
@@ -262,11 +266,26 @@ namespace Watch_Ecommerce.Controllers
 
                 mapper.Map(productDto, existingProduct);
 
-                if (productDto.Images != null)
+                //if (productDto.Images != null)
+                //{
+                //    existingProduct.Images = mapper.Map<List<Image>>(productDto.Images); // Replace or merge images
+                //}
+                if (productDto.Images != null && productDto.Images.Any())
                 {
-                    existingProduct.Images = mapper.Map<List<Image>>(productDto.Images); // Replace or merge images
-                }
 
+                    var paths = await _imageManagementService.AddImageAsync(productDto.Images, productDto.Name);
+                    var existingImagesCount = existingProduct.Images?.Count ?? 0;
+                    bool hasPrimary = existingProduct.Images?.Any(img => img.isPrimary) ?? false;
+
+                    var newImages = paths.Select((path, index) => new Image
+                    {
+                        Url = path,
+                        isPrimary = !hasPrimary && index == 0,
+                        ProductId = id
+                    }).ToList();
+
+                    await unitOfWork.ImageRepository.AddRangeAsync(newImages);
+                }
                 await unitOfWork.productrepo.UpdateAsync(existingProduct);
                 await unitOfWork.CompleteAsync();
 
@@ -289,7 +308,7 @@ namespace Watch_Ecommerce.Controllers
                     return NotFound($"Product with ID {id} not found.");
                 await unitOfWork.productrepo.DeleteAsync(id);
                 await unitOfWork.CompleteAsync();
-                return NoContent(); // 204 No Content
+                return NoContent(); 
             }
             catch (Exception ex)
             {

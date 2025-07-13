@@ -11,6 +11,7 @@ namespace Watch_EcommerceDAL.Models
         public CustomerBasket(string id)
         {
             Id = id;
+            Items = new List<CartItem>();
         }
         
         public string Id { get; set; }

@@ -22,16 +22,21 @@ namespace Watch_Ecommerce
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
-
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IImageManagementService, ImageManagementService>();
             builder.Services.AddSingleton<IFileProvider>
                 (new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+            builder.Services.AddScoped<CartService>();
 
             builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             builder.Services.AddScoped<ICartRepository, CartRepositry>();
             builder.Services.AddScoped<OrderService>();
+
             builder.Services.AddScoped<CartRepositry>();
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.AddScoped<PaymentService>();
 
 
             #region Database & User Identity

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using ECommerce.Core.model;
+using Microsoft.EntityFrameworkCore;
 using Watch_Ecommerce.DTOs.Order;
 using Watch_Ecommerce.DTOs.Product;
+using Watch_Ecommerce.DTOS;
+using Watch_Ecommerce.DTOS.Address;
 using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Color;
 using Watch_Ecommerce.DTOS.Fav;
@@ -12,7 +15,6 @@ using Watch_Ecommerce.DTOS.ProductBrand;
 using Watch_Ecommerce.DTOS.Size;
 using Watch_Ecommerce.DTOS.User;
 using Watch_EcommerceDAL.Models;
-
 namespace Watch_Ecommerce.Helpers
 {
     public class MappingProfiles : Profile
@@ -80,9 +82,13 @@ namespace Watch_Ecommerce.Helpers
 
 
             CreateMap<ProductCreateDTO, Product>()
-                .ForMember(src => src.Images,
-                            opt => opt.Ignore())
+                .ForMember((src) => src.Images, opt => opt.Ignore())
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ReverseMap();
+
+           CreateMap<UpdateProductDTO, Product>()
+                .IncludeBase<ProductCreateDTO, Product>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore());
             #endregion
 
             #region fav
@@ -108,7 +114,10 @@ namespace Watch_Ecommerce.Helpers
 
             #region order
             CreateMap<OrderAddressDto,OrderAddress>().ReverseMap();
-            CreateMap<Order,OrderDetailsDto>().ReverseMap();
+            CreateMap<Order,OrderDetailsDto>()
+                .ForMember(dest => dest.Email,
+                    opt => opt.MapFrom(src => src.User.Email))
+                .ReverseMap();
             CreateMap<Order, OrderDto>();
             CreateMap<OrderItem, OrderItemDto>();
             CreateMap<OrderAddress, OrderAddressDto>();
@@ -131,9 +140,19 @@ namespace Watch_Ecommerce.Helpers
                 .ForMember(dest => dest.PhoneNumber,
                     opt => opt.MapFrom(src => src.PhoneNumber))
                 .ReverseMap();
+            CreateMap<User, UserProfileReadDTO>();
+            CreateMap<UserProfileUpdateDTO, User>()
+                 .ForMember(dest => dest.Addresses, opt => opt.Ignore());
             #endregion
 
-           
+
+            #region address
+
+            CreateMap<AddressDTO, Address>()
+                .ReverseMap();
+            #endregion
+
+
         }
     }
 }

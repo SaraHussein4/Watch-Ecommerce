@@ -75,6 +75,14 @@ namespace Watch_Ecommerce.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryReadDTO>> PostCategory(CategoryCreateDTO categoryCreateDTO)
         {
+            var exists = await _unitOfWorks.CategoryRepository
+                    .AnyAsync(c => c.Name.ToLower() == categoryCreateDTO.Name.ToLower());
+
+            if (exists)
+            {
+                return BadRequest("Category already exists.");
+            }
+
             var category = _mapper.Map<Category>(categoryCreateDTO);
             await _unitOfWorks.CategoryRepository.AddAsync(category);
             await _unitOfWorks.CompleteAsync();

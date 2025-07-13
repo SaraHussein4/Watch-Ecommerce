@@ -6,16 +6,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Watch_Ecommerce.DTOs.Order;
+using Watch_Ecommerce.DTOS.Category;
 using Watch_Ecommerce.DTOS.Order;
 using Watch_Ecommerce.Services;
 using Watch_EcommerceBl.Interfaces;
+using Watch_EcommerceBl.UnitOfWorks;
 using Watch_EcommerceDAL.Models;
 
 namespace Watch_Ecommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class OrderController : ControllerBase
     {
         private readonly OrderService OrderService;
@@ -38,7 +40,7 @@ namespace Watch_Ecommerce.Controllers
                     return Unauthorized("User not authenticated");
                 string userId = userclaims.Value;
 
-                var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress);
+                var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress, dto.PaymentMethod);
 
                 if (order == null)
                     return BadRequest("Basket is empty or something went wrong.");
@@ -103,7 +105,7 @@ namespace Watch_Ecommerce.Controllers
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("User not authenticated");
                 var orderCancel = await OrderService.CancelorderAsync(userId, orderid);
-                if (orderCancel == null)
+                if (!orderCancel)
                     return BadRequest("Cannot cancel this order. It may have already been shipped or does not exist.");
                 return Ok("Order cancelled successfully.");
             }
@@ -112,6 +114,73 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        [HttpGet("orders")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetOrders(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+                int totalCount = orders.Count();
+                orders = orders.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.Date);
+                var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+                return Ok(new
+                {
+                    orders = dto,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving orders: {ex.Message}");
+            }
+        }
+
+        [HttpGet("ordersForUser")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetOrdersForUser(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var userclaims = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userclaims == null)
+                    return Unauthorized("User not authenticated");
+                string userId = userclaims.Value;
+
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync();
+                int totalCount = orders.Where(o => o.UserId == userId).Count();
+                orders = orders.Where(o => o.UserId == userId).Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.Date);
+                var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+                return Ok(new
+                {
+                    orders = dto,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error retrieving orders: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> UpdateOrder(int id, OrderDetailsDto orderDetailsDto)
+        {
+            if (id != orderDetailsDto.Id)
+            {
+                return BadRequest();
+            }
+
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(id);
+            if (order == null)
+            {
+                return BadRequest();
+            }
+            mapper.Map(orderDetailsDto, order);
+            await _unitOfWork.OrderRepository.UpdateAsync(order);
+            await _unitOfWork.CompleteAsync();
+            return NoContent();
+        }
+
 
         [HttpGet("Governorate")]
         [AllowAnonymous]
@@ -163,6 +232,42 @@ namespace Watch_Ecommerce.Controllers
                 return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
+
+
+        [HttpPost("CreateStripe")]
+        public async Task<IActionResult> CreateStripeSession([FromBody] CreatedOrderDto dto)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var order = await OrderService.CreateOrderAsync(userId, dto.DeliveryMethodId, dto.ShippingAddress, "card");
+
+            if (order == null)
+                return BadRequest("Failed to create order.");
+
+            var sessionUrl = await OrderService.CreateStripeSessionAsync(order.Id);
+
+            if (string.IsNullOrEmpty(sessionUrl))
+                return BadRequest("Could not create Stripe session.");
+
+            return Ok(new { url = sessionUrl });
+        }
+
+
+        [HttpPost("confirm-payment")]
+        public async Task<IActionResult> ConfirmPayment([FromQuery] string sessionId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var confirmed = await OrderService.ConfirmStripeOrderAsync(sessionId, userId);
+            if (!confirmed)
+                return BadRequest("Payment not confirmed.");
+
+            return Ok("Payment confirmed and order updated.");
+        }
+
 
 
     }

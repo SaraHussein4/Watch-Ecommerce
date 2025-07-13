@@ -12,7 +12,7 @@ namespace Watch_Ecommerce.DTOS.Product
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string Status { get; set; }
-        public Gender GenderCategory { get; set; }
+        public string GenderCategory { get; set; }
         public bool WaterResistance { get; set; }
         public int WarrentyYears { get; set; }
         public List<string> Colors { get; set; }

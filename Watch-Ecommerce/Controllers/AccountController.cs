@@ -17,14 +17,20 @@ namespace Watch_Ecommerce.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IGenericRepository<Address, int> _addressRepository;
+        private readonly IUnitOfWorks _unitOfWorks;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AccountController(UserManager<User> userManager , SignInManager<User> signInManager , ITokenService tokenService, IMapper mapper, IGenericRepository<Address,int> addressRepository)
+        public AccountController(UserManager<User> userManager , 
+                                 SignInManager<User> signInManager , 
+                                 ITokenService tokenService,
+                                 IMapper mapper, IGenericRepository<Address,int> addressRepository,
+                                 IUnitOfWorks unitOfWorks)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _addressRepository = addressRepository;
+            _unitOfWorks = unitOfWorks;
             _mapper = mapper;
         }
 
@@ -63,7 +69,8 @@ namespace Watch_Ecommerce.Controllers
                 UserId = user.Id
             };
 
-            await _addressRepository.AddAsync(address);
+            await _unitOfWorks.AddressReposirory.AddAsync(address);
+            await _unitOfWorks.CompleteAsync();
 
             var returnUser = new UserDto
             {

@@ -22,9 +22,12 @@ namespace Watch_EcommerceBl.UnitOfWorks
         
         public IUserRepository userRepository;
 
+        public IGenericRepository<Order, int> orderRepository;
 
         public IGenericRepository<Governorate, int> governorateRepository;
         public IGenericRepository<Deliverymethod, int> deliveryMethodRepository;
+        public IGenericRepository<Address, int> addressRepository;
+
 
         IProductRepository _productrepo;
         IFavouriteRepository favouriteRepository;
@@ -121,6 +124,19 @@ namespace Watch_EcommerceBl.UnitOfWorks
             }
         }
 
+
+        public IGenericRepository<Order, int> OrderRepository
+        {
+            get
+            {
+                if (orderRepository == null)
+                {
+                    orderRepository = new GenericRepository<Order, int>(_context);
+                }
+                return orderRepository;
+            }
+        }
+
         public IGenericRepository<Deliverymethod, int> DeliveryMethodRepository
         {
             get
@@ -143,6 +159,16 @@ namespace Watch_EcommerceBl.UnitOfWorks
                     userRepository = new UserRepository(_context);
                 }
                 return userRepository;
+            }
+        }
+
+        public IGenericRepository<Address, int> AddressReposirory
+        {
+            get
+            {
+                if (addressRepository == null)
+                    addressRepository = new GenericRepository<Address, int>(_context);
+                        return addressRepository;
             }
         }
 

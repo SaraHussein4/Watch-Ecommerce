@@ -13,6 +13,7 @@ namespace Watch_EcommerceDAL.Models
             Id = id;
             Items = new List<CartItem>();
         }
+        
         public string Id { get; set; }
         public List<CartItem> Items { get; set; }
     }

@@ -16,6 +16,5 @@ namespace Watch_EcommerceDAL.Models
         public string Category { get; set; }
         public int Quantity { get; set; }
         public int productQuantity { get; set; }
-
     }
 }

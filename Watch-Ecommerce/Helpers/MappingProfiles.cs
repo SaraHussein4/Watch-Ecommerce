@@ -119,7 +119,11 @@ namespace Watch_Ecommerce.Helpers
                     opt => opt.MapFrom(src => src.User.Email))
                 .ReverseMap();
             CreateMap<Order, OrderDto>();
-            CreateMap<OrderItem, OrderItemDto>();
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest => dest.ProductName, 
+                    opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.image,
+                    opt => opt.MapFrom(src => src.Product.Images.FirstOrDefault(img => img.isPrimary).Url));
             CreateMap<OrderAddress, OrderAddressDto>();
             CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion

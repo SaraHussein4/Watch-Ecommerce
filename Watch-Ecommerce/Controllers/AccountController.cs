@@ -89,11 +89,18 @@ namespace Watch_Ecommerce.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user is null)
+                return Unauthorized(new { message = "Invalid email or password" });
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+            if (!result.Succeeded)
+                return Unauthorized(new { message = "Invalid email or password" });
+
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.FirstOrDefault() ?? "User";
-            if (user is null) return Unauthorized();
-            var Result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-            if (!Result.Succeeded) return Unauthorized();
+
             return new UserDto
             {
                 Name = user.Name,

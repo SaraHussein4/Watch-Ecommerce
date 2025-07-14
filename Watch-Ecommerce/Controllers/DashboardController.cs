@@ -31,7 +31,8 @@ namespace Watch_Ecommerce.Controllers
 
             var lastMonth = DateTime.Now.AddMonths(-1);
             var revenueLastMonth = ordersList.Where(o => o.Date >= lastMonth).Sum(o => o.Amount);
-            var growth = revenueLastMonth == 0 ? 0 : ((revenue - revenueLastMonth) / revenueLastMonth) * 100;
+            var growth= revenueLastMonth == 0 ? "0%" : $"{Math.Round(((revenue - revenueLastMonth) / revenueLastMonth) * 100, 2)}";
+
 
             return Ok(new
             {

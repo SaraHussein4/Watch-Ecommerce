@@ -46,13 +46,13 @@ namespace ECommerce.Core.model
                 .HasOne(f => f.User)
                 .WithMany(u => u.Products)
                 .HasForeignKey(f => f.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Favourite>()
                 .HasOne(f => f.Product)
                 .WithMany(p => p.Users)
                 .HasForeignKey(f => f.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             #region Image
@@ -118,7 +118,7 @@ namespace ECommerce.Core.model
                 .HasOne(oi => oi.Product)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(oi => oi.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             #endregion
@@ -139,13 +139,13 @@ namespace ECommerce.Core.model
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Product>()
                 .HasOne(p => p.ProductBrand)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.ProductBrandId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             #region ProductBrand

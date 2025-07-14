@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Watch_Ecommerce.DTOs;
 using Watch_Ecommerce.DTOS.Address;
+using Watch_Ecommerce.DTOS.Delivery;
 using Watch_Ecommerce.DTOS.User;
 using Watch_EcommerceBl.Interfaces;
 
@@ -149,6 +151,93 @@ namespace Watch_Ecommerce.Controllers
             return NoContent();
         }
 
+
+        [HttpGet("deliveries")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllDeliveries()
+        {
+            var deliveries = (await _unitOfWorks.UserRepository.GetAllAsync())
+                .Where(u => _userManager.IsInRoleAsync(u, "Delivery").Result)
+                .ToList();
+            var dto = deliveries.Select(d => new UserProfileReadDTO
+            {
+                Id = d.Id,
+                Name = d.Name,
+                Email = d.Email,
+                PhoneNumber = d.PhoneNumber,
+                GovernorateId = d.GovernorateId,
+                GovernorateName = d.Governorate?.Name
+            }).ToList();
+            return Ok(dto);
+        }
+
+        [HttpPost("deliveries")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddDelivery([FromBody] RegisterDto dto)
+        {
+            if (!dto.GovernorateId.HasValue)
+                return BadRequest("GovernorateId is required for delivery.");
+            var user = new User
+            {
+                Name = dto.Name,
+                Email = dto.Email,
+                UserName = dto.Email.Split('@')[0],
+                PhoneNumber = dto.PhoneNumber,
+                GovernorateId = dto.GovernorateId
+            };
+            var result = await _userManager.CreateAsync(user, dto.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            await _userManager.AddToRoleAsync(user, "Delivery");
+            return Ok(new { message = "Delivery created successfully." });
+
+        }
+
+        [HttpDelete("deliveries/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteDelivery(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+            if (!await _userManager.IsInRoleAsync(user, "Delivery"))
+                return BadRequest("User is not a delivery.");
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+            return Ok(new { message = "Delivery deleted successfully." });
+        }
+
+        [HttpPut("deliveries/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditDelivery(string id, [FromBody] DeliveryUpdateDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            if (!await _userManager.IsInRoleAsync(user, "Delivery"))
+                return BadRequest("User is not a delivery.");
+
+            user.Name = dto.Name;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.GovernorateId = dto.GovernorateId;
+
+            if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != user.Email)
+            {
+                user.Email = dto.Email;
+                user.UserName = dto.Email.Split('@')[0];
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(new { message = "Delivery Updated successfully." });
+        }
 
 
 

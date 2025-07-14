@@ -10,5 +10,6 @@ namespace Watch_Ecommerce.DTOS.User
         public string PhoneNumber { get; set; }
 
         public List<AddressDTO> Addresses { get; set; }
+        public int? GovernorateId { get; set; }
     }
 }

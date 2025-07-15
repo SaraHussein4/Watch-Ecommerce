@@ -32,5 +32,6 @@ namespace Watch_Ecommerce.DTOs
         public string Street { get; set; }
         public string State { get; set; }
         public bool IsDefault { get; set; }
+        public int? GovernorateId { get; set; }
     }
 }

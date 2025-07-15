@@ -67,7 +67,7 @@ namespace Watch_Ecommerce.Controllers
             var favRemoved = await UOW.FavoriteRepo.RemoveFromFav(userId, productId);
             if (!favRemoved) return NotFound("Item not found in favorites");
             await UOW.CompleteAsync();
-            return Ok("Item removed successfully");
+            return Ok(new { message = "Item removed successfully" });
         }
 
 

@@ -130,7 +130,15 @@ namespace Watch_Ecommerce.Services
                 .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
         }
 
-
+        public async Task<List<Order>> GetOrdersByGovernorateAsync(int governorateId, int page = 1, int pageSize = 10)
+        {
+            return await _context.Orders
+                .Where(o => o.OrderAddress.GovernorateId == governorateId)
+                .OrderByDescending(o => o.Date)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
         public async Task<string?> CreateStripeSessionAsync(int orderId)
         {

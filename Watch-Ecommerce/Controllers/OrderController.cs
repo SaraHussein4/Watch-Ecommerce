@@ -137,7 +137,7 @@ namespace Watch_Ecommerce.Controllers
         }
 
         [HttpGet("ordersForUser")]
-        public async Task<ActionResult<IEnumerable<OrderDetailsDto>>> GetOrdersForUser(int page = 1, int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersForUser(int page = 1, int pageSize = 10)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace Watch_Ecommerce.Controllers
                 var orders = await _unitOfWork.OrderRepository.GetAllAsync();
                 int totalCount = orders.Where(o => o.UserId == userId).Count();
                 orders = orders.Where(o => o.UserId == userId).Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.Date);
-                var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+                var dto = mapper.Map<IEnumerable<OrderDto>>(orders);
                 return Ok(new
                 {
                     orders = dto,
@@ -269,6 +269,26 @@ namespace Watch_Ecommerce.Controllers
         }
 
 
+        [HttpGet("delivery-orders")]
+        [Authorize(Roles = "Delivery")]
+        public async Task<IActionResult> GetOrdersForDelivery(int page = 1, int pageSize = 10)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User not authenticated");
+
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            if (user == null || user.GovernorateId == null)
+                return BadRequest("Delivery user must have a governorate assigned.");
+
+            var orders = await OrderService.GetOrdersByGovernorateAsync(user.GovernorateId.Value, page, pageSize);
+            var dto = mapper.Map<IEnumerable<OrderDetailsDto>>(orders);
+            return Ok(new
+            {
+                orders = dto,
+                totalCount = orders.Count
+            });
+        }
 
     }
 }

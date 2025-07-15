@@ -71,12 +71,21 @@ namespace Watch_Ecommerce.Helpers
             CreateMap<AddProductDTO, Product>().ReverseMap();
 
             CreateMap<Product, UpdateProductDTO>().ReverseMap();
-            CreateMap<UpdateProductDTO, Product>()
-   .ForMember(dest => dest.Colors, opt => opt.MapFrom(src =>
-       src.Colors != null ? string.Join(",", new object?[] { src.Colors }) : null))
-   .ForMember(dest => dest.Sizes, opt => opt.MapFrom(src =>
-       src.Sizes != null ? string.Join(",", new object?[] { src.Sizes }) : null))
-   .ReverseMap();
+
+//             CreateMap<UpdateProductDTO, Product>()
+//    .ForMember(dest => dest.Colors, opt => opt.MapFrom(src =>
+//        src.Colors != null ? string.Join(",", new object?[] { src.Colors }) : null))
+//    .ForMember(dest => dest.Sizes, opt => opt.MapFrom(src =>
+//        src.Sizes != null ? string.Join(",", new object?[] { src.Sizes }) : null))
+//    .ReverseMap();
+
+   //         CreateMap<UpdateProductDTO, Product>()
+   //.ForMember(dest => dest.Colors, opt => opt.MapFrom(src =>
+   //    src.Colors != null ? string.Join(",", src.Colors) : null))
+   //.ForMember(dest => dest.Sizes, opt => opt.MapFrom(src =>
+   //    src.Sizes != null ? string.Join(",", src.Sizes) : null))
+   //.ReverseMap();
+
 
             CreateMap<Image, ImageDTO>().ReverseMap();
 
@@ -119,7 +128,11 @@ namespace Watch_Ecommerce.Helpers
                     opt => opt.MapFrom(src => src.User.Email))
                 .ReverseMap();
             CreateMap<Order, OrderDto>();
-            CreateMap<OrderItem, OrderItemDto>();
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest => dest.ProductName, 
+                    opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.image,
+                    opt => opt.MapFrom(src => src.Product.Images.FirstOrDefault(img => img.isPrimary).Url));
             CreateMap<OrderAddress, OrderAddressDto>();
             CreateMap<Deliverymethod, DeliverymethodDto>();
             #endregion
